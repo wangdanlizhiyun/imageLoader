@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">imageLoader_library</string>
+    <item type="id" name="tag_url"/>
+</resources>
