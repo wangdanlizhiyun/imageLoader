@@ -256,7 +256,7 @@ public class ImageCache {
                 if (is != null) {
                     Movie movie = Movie.decodeStream(is);
                     GifDraw gifDrawer = new GifDraw(movie, bitmapRequest);
-                    gifDrawer.into(bitmapRequest.view.get());
+                    gifDrawer.into(bitmapRequest.view);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

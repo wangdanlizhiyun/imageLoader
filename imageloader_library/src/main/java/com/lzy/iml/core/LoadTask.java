@@ -10,7 +10,6 @@ import com.lzy.iml.request.BitmapRequest;
 public class LoadTask implements Runnable {
     public BitmapRequest mRequest;
 
-
     public LoadTask(BitmapRequest request) {
         super();
         this.mRequest = request;
@@ -18,11 +17,11 @@ public class LoadTask implements Runnable {
 
     @Override
     public void run() {
-        mRequest.loadBitmap();
-        ImageCache.getInstance().putBitmap2Memory(mRequest.getMemoryKey(), mRequest.bitmap);
-        mRequest.refreashBitmap();
+        if (mRequest.bitmap == null) {
+            mRequest.loadBitmap();
+            ImageCache.getInstance().putBitmap2Memory(mRequest.getMemoryKey(), mRequest.bitmap);
+            mRequest.refreashBitmap();
+        }
+        mRequest.loadMovie();
     }
-
-
-
 }

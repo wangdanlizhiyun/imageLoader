@@ -9,12 +9,14 @@ import android.widget.ImageView;
 
 import com.lzy.iml.request.BitmapRequest;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by lizhiyun on 2018/4/26.
  */
 
 public class GifDraw {
-    private ImageView imageView;
+    private WeakReference<ImageView> view;
     private Movie movie;
     private Bitmap bitmap;
     private Canvas canvas;
@@ -24,11 +26,10 @@ public class GifDraw {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (imageView.getParent() == null){
+            if (view.get().getParent() == null || !bitmapRequest.checkEffective()){
+                handler.removeCallbacksAndMessages(null);
                 return;
             }
-
-            if (!bitmapRequest.checkEffective()) return;
             draw();
             handler.postDelayed(runnable, delayMills);
         }
@@ -43,21 +44,21 @@ public class GifDraw {
         canvas.save();
         movie.setTime((int) (System.currentTimeMillis() % movie.duration()));
         movie.draw(canvas, 0, 0);
-        imageView.setImageBitmap(bitmap);
+        view.get().setImageBitmap(bitmap);
         canvas.restore();
     }
 
 
-    public void into(ImageView imageView) {
-        this.imageView = imageView;
-        if (imageView == null) return;
+    public void into(WeakReference<ImageView> view) {
+        this.view = view;
+        if (view == null || view.get() == null) return;
         if (movie == null) return;
         if (movie.width() <= 0 || movie.height() <= 0) {
             return;
         }
         bitmap = Bitmap.createBitmap(movie.width(), movie.height(), bitmapRequest.inPreferredConfig);
         canvas = new Canvas(bitmap);
-        handler.post(runnable);
+        handler.postDelayed(runnable, delayMills);
     }
 
 }

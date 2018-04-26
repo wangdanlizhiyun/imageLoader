@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.lzy.iml.R;
@@ -60,7 +61,11 @@ public class BitmapRequest {
     }
 
     public String getMemoryKey() {
-        return Util.md5(this.path + width + height + isFace);
+        if (TextUtils.isEmpty(path)){
+            return Util.md5(this.resId + "" + this.width + this.height + isFace);
+        }else {
+            return Util.md5(this.path + this.width + this.height + isFace);
+        }
     }
 
 
@@ -187,25 +192,9 @@ public class BitmapRequest {
         switch (sourceType) {
             case RES:
                 loadBitmapFromResId(resId);
-                try {
-                    is = ImageCache.getInstance().context.getResources().openRawResource(resId);
-                    if (is != null) {
-                        if (view != null && view.get() != null) {
-                            movie = Movie.decodeStream(is);
-                            if (movie != null) {
-                                GifDraw gifDrawer = new GifDraw(movie,this);
-                                gifDrawer.into(view.get());
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    Util.close(is);
-                }
                 break;
             case HTTP:
-                new HttpLoader().load(this);
+                new HttpLoader().loadBitmap(this);
                 break;
             case ASSERTS:
                 try {
@@ -218,6 +207,39 @@ public class BitmapRequest {
                 } finally {
                     Util.close(is);
                 }
+                break;
+            case FILE:
+                if (!new File(path).exists()) return;
+                loadBitmapFromFile(path);
+                break;
+
+        }
+    }
+    public void loadMovie() {
+        InputStream is = null;
+        switch (sourceType) {
+            case RES:
+                try {
+                    is = ImageCache.getInstance().context.getResources().openRawResource(resId);
+                    if (is != null) {
+                        if (view != null && view.get() != null) {
+                            movie = Movie.decodeStream(is);
+                            if (movie != null) {
+                                GifDraw gifDrawer = new GifDraw(movie,this);
+                                gifDrawer.into(view);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    Util.close(is);
+                }
+                break;
+            case HTTP:
+                new HttpLoader().loadMovie(this);
+                break;
+            case ASSERTS:
                 try {
                     is = ImageCache.getInstance().context.getAssets().open(path);
                     if (is != null) {
@@ -225,7 +247,7 @@ public class BitmapRequest {
                             movie = Movie.decodeStream(is);
                             if (movie != null) {
                                 GifDraw gifDrawer = new GifDraw(movie,this);
-                                gifDrawer.into(view.get());
+                                gifDrawer.into(view);
                             }
                         }
                     }
@@ -237,12 +259,11 @@ public class BitmapRequest {
                 break;
             case FILE:
                 if (!new File(path).exists()) return;
-                loadBitmapFromFile(path);
                 if (view != null && view.get() != null) {
                     movie = Movie.decodeFile(path);
                     if (movie != null) {
                         GifDraw gifDrawer = new GifDraw(movie,this);
-                        gifDrawer.into(view.get());
+                        gifDrawer.into(view);
                     }
                 }
                 break;

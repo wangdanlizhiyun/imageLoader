@@ -37,6 +37,18 @@ public class EmptyUtil {
                     ImageLoaderExecutor.getInstance().cancelTask(code);
                     concurrentHashMap.remove(code);
                 }
+
+                @Override
+                public void onStop() {
+                    super.onStop();
+
+                }
+
+                @Override
+                public void onStart() {
+                    super.onStart();
+                }
+
             };
             concurrentHashMap.put(code,lifeCycleListener);
         }

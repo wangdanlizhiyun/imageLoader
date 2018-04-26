@@ -32,7 +32,7 @@ public class HttpLoader {
     int mIntDownloadTime = 0;
     int mIntRetryTime = 2;
 
-    public void load(BitmapRequest request) {
+    public void loadBitmap(BitmapRequest request) {
         request.isFirstDown = true;
         request.bitmap = ImageCache.getInstance().getBitmapFromDisk(request);
         if (request.bitmap == null) {
@@ -43,6 +43,8 @@ public class HttpLoader {
                 downloadImgByUrl(request);
             }
         }
+    }
+    public void loadMovie(BitmapRequest request) {
         ImageCache.getInstance().getMovieFromDisk(request);
     }
 
