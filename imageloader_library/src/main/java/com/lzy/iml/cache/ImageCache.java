@@ -6,12 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Movie;
 import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.LruCache;
 
 import com.lzy.iml.BuildConfig;
 import com.lzy.iml.cache.disk.DiskLruCache;
 import com.lzy.iml.gif.GifDraw;
+import com.lzy.iml.gif.GifUtil;
 import com.lzy.iml.request.BitmapRequest;
 import com.lzy.iml.util.Util;
 
@@ -255,8 +257,7 @@ public class ImageCache {
                 InputStream is = snapshot.getInputStream(0);
                 if (is != null) {
                     Movie movie = Movie.decodeStream(is);
-                    GifDraw gifDrawer = new GifDraw(movie, bitmapRequest);
-                    gifDrawer.into(bitmapRequest.view);
+                    GifUtil.getInstance().getGifDraw(movie,bitmapRequest);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

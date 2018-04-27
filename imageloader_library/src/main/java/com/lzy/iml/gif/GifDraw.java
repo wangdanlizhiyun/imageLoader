@@ -5,18 +5,19 @@ import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.lzy.iml.request.BitmapRequest;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lizhiyun on 2018/4/26.
  */
 
 public class GifDraw {
-    private WeakReference<ImageView> view;
     private Movie movie;
     private Bitmap bitmap;
     private Canvas canvas;
@@ -26,7 +27,7 @@ public class GifDraw {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (view.get().getParent() == null || !bitmapRequest.checkEffective()){
+            if (bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkEffective()){
                 handler.removeCallbacksAndMessages(null);
                 return;
             }
@@ -41,17 +42,18 @@ public class GifDraw {
     }
 
     private void draw() {
+        if (mIsStop.get()) return;
         canvas.save();
         movie.setTime((int) (System.currentTimeMillis() % movie.duration()));
         movie.draw(canvas, 0, 0);
-        view.get().setImageBitmap(bitmap);
+        bitmapRequest.view.get().setImageBitmap(bitmap);
         canvas.restore();
     }
 
 
-    public void into(WeakReference<ImageView> view) {
-        this.view = view;
-        if (view == null || view.get() == null) return;
+    public void into(BitmapRequest bitmapRequest) {
+        this.bitmapRequest = bitmapRequest;
+        if (bitmapRequest.view == null || bitmapRequest.view.get() == null) return;
         if (movie == null) return;
         if (movie.width() <= 0 || movie.height() <= 0) {
             return;
@@ -60,5 +62,12 @@ public class GifDraw {
         canvas = new Canvas(bitmap);
         handler.postDelayed(runnable, delayMills);
     }
+    AtomicBoolean mIsStop = new AtomicBoolean(false);
 
+    void onStop(){
+        mIsStop.compareAndSet(false,true);
+    }
+    void onStart(){
+        mIsStop.compareAndSet(true,false);
+    }
 }

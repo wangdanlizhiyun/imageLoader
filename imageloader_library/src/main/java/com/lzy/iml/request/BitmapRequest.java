@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.lzy.iml.R;
 import com.lzy.iml.cache.ImageCache;
 import com.lzy.iml.gif.GifDraw;
+import com.lzy.iml.gif.GifUtil;
 import com.lzy.iml.loader.HttpLoader;
 import com.lzy.iml.util.FaceUtil;
 import com.lzy.iml.util.ImageRotateUtil;
@@ -224,10 +225,7 @@ public class BitmapRequest {
                     if (is != null) {
                         if (view != null && view.get() != null) {
                             movie = Movie.decodeStream(is);
-                            if (movie != null) {
-                                GifDraw gifDrawer = new GifDraw(movie,this);
-                                gifDrawer.into(view);
-                            }
+                                GifUtil.getInstance().getGifDraw(movie,this);
                         }
                     }
                 } catch (Exception e) {
@@ -245,10 +243,7 @@ public class BitmapRequest {
                     if (is != null) {
                         if (view != null && view.get() != null) {
                             movie = Movie.decodeStream(is);
-                            if (movie != null) {
-                                GifDraw gifDrawer = new GifDraw(movie,this);
-                                gifDrawer.into(view);
-                            }
+                                GifUtil.getInstance().getGifDraw(movie,this);
                         }
                     }
                 } catch (Exception e) {
@@ -261,10 +256,7 @@ public class BitmapRequest {
                 if (!new File(path).exists()) return;
                 if (view != null && view.get() != null) {
                     movie = Movie.decodeFile(path);
-                    if (movie != null) {
-                        GifDraw gifDrawer = new GifDraw(movie,this);
-                        gifDrawer.into(view);
-                    }
+                        GifUtil.getInstance().getGifDraw(movie,this);
                 }
                 break;
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 
+import com.lzy.iml.gif.GifUtil;
 import com.lzy.iml.util.ImageLoaderExecutor;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,12 +42,13 @@ public class EmptyUtil {
                 @Override
                 public void onStop() {
                     super.onStop();
-
+                    GifUtil.getInstance().stopGif(code);
                 }
 
                 @Override
                 public void onStart() {
                     super.onStart();
+                    GifUtil.getInstance().startGif(code);
                 }
 
             };
