@@ -37,6 +37,7 @@ public class EmptyUtil {
                     super.onDestory();
                     ImageLoaderExecutor.getInstance().cancelTask(code);
                     concurrentHashMap.remove(code);
+                    GifUtil.getInstance().removeGif(code);
                 }
 
                 @Override

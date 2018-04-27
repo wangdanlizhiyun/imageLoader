@@ -1,12 +1,12 @@
 package com.lzy.iml.gif;
 
 import android.graphics.Movie;
-import android.util.LruCache;
-import android.widget.ImageView;
+import android.util.Log;
 
 import com.lzy.iml.request.BitmapRequest;
 
-import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,7 +26,6 @@ public class GifUtil {
         gifDrawConcurrentHashMap = new ConcurrentHashMap<>();
     }
 
-
     ConcurrentHashMap<Integer, GifDraw> gifDrawConcurrentHashMap;
 
     public void getGifDraw(Movie movie, BitmapRequest bitmapRequest) {
@@ -39,7 +38,6 @@ public class GifUtil {
             }
             gifDraw.into(bitmapRequest);
         }
-
     }
 
     public void stopGif(int code) {
@@ -62,4 +60,18 @@ public class GifUtil {
             }
         }
     }
+    public void removeGif(int code) {
+        synchronized (gifDrawConcurrentHashMap) {
+            Iterator iterator = gifDrawConcurrentHashMap.entrySet().iterator();
+            while (iterator.hasNext()){
+                Map.Entry entry = (Map.Entry) iterator.next();
+                int key = (int) entry.getKey();
+                GifDraw gifDraw = (GifDraw) entry.getValue();
+                if (gifDraw.bitmapRequest.parentCode == code) {
+                    gifDrawConcurrentHashMap.remove(key);
+                }
+            }
+        }
+    }
+
 }

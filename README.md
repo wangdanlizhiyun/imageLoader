@@ -2,7 +2,8 @@
 
 ## 效果图
 
-<img src="aa.gif" width="480px"/>
+<img src="aa.gif" width="200px"/>
+<img src="bb.gif" width="200px"/>
 
 ## 加载整个手机的图片后内存还算稳定
 

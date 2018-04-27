@@ -27,7 +27,7 @@ public class GifDraw {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkEffective()){
+            if (bitmapRequest.view == null || bitmapRequest.view.get() == null || bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkEffective()) {
                 handler.removeCallbacksAndMessages(null);
                 return;
             }
@@ -62,12 +62,14 @@ public class GifDraw {
         canvas = new Canvas(bitmap);
         handler.postDelayed(runnable, delayMills);
     }
+
     AtomicBoolean mIsStop = new AtomicBoolean(false);
 
-    void onStop(){
-        mIsStop.compareAndSet(false,true);
+    void onStop() {
+        mIsStop.compareAndSet(false, true);
     }
-    void onStart(){
-        mIsStop.compareAndSet(true,false);
+
+    void onStart() {
+        mIsStop.compareAndSet(true, false);
     }
 }
