@@ -32,12 +32,15 @@
   ```
     Image.with(that).load(TDSystemGallery.sList.get(position).getPath()).placeHolder(loadingDrawable)
                                     .errorDrawable(errorDrawable)
-                                    .face()
+                                    
                                     .size(Util.getScreenWidth(that) / 3, Util.getScreenWidth(that) / 3)
                                     .into(imageView);
                                     
-    Image.with(this).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524719691407&di=6b60fa1d61c82f19fa3c2f511a98bc43&imgtype=0&src=http%3A%2F%2Fwww.21998.cn%2Fuploadfile%2Fnews%2Fimage%2F20161107%2F20161107171401_12213.gif")
-                                                    .diskCacheStrategy(BitmapRequestBuilder.DiskCacheStrategy.NONE).into(imageView1);
+    Image.with(this).load("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=823222274,759908896&fm=27&gp=0.jpg")
+                    .diskCacheStrategy(BitmapRequestBuilder.DiskCacheStrategy.NONE)
+                    .face()
+                    .blur(3)
+                    .into(imageView1);
      Image.with(this).loadAsserts("mp.gif").into(imageView2);
      Image.with(this).errorDrawable(null).load(R.drawable.xiaosong).into(imageView3);
      Image.with(this).errorDrawable(null).load(R.drawable.g).into(imageView4);
