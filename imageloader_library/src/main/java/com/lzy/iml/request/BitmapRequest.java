@@ -20,6 +20,7 @@ import com.lzy.iml.gif.GifDraw;
 import com.lzy.iml.gif.GifUtil;
 import com.lzy.iml.loader.HttpLoader;
 import com.lzy.iml.util.FaceUtil;
+import com.lzy.iml.util.GaussianBlur;
 import com.lzy.iml.util.ImageRotateUtil;
 import com.lzy.iml.util.ImageSizeUtil;
 import com.lzy.iml.util.Util;
@@ -45,7 +46,9 @@ public class BitmapRequest {
     public Drawable errorDrawable;
     public Bitmap.Config inPreferredConfig;
     public boolean isFace;
+    public int blurSize;
     public int parentCode;
+    public BitmapRequestBuilder.DiskCacheStrategy diskCacheStrategy;
     public BitmapFactory.Options options = new BitmapFactory.Options();
 
     public static enum SourceType {
@@ -63,9 +66,9 @@ public class BitmapRequest {
 
     public String getMemoryKey() {
         if (TextUtils.isEmpty(path)){
-            return Util.md5(this.resId + "" + this.width + this.height + isFace);
+            return Util.md5(this.resId + "" + this.width + this.height + isFace+blurSize);
         }else {
-            return Util.md5(this.path + this.width + this.height + isFace);
+            return Util.md5(this.path + this.width + this.height + isFace+blurSize);
         }
     }
     public String getPathKey() {
@@ -174,6 +177,9 @@ public class BitmapRequest {
         bitmap = ImageRotateUtil.modifyBitmap(path, bitmap);
         if (isFace) {
             bitmap = FaceUtil.face(bitmap);
+        }
+        if (blurSize > 0){
+            bitmap = new GaussianBlur().blur(bitmap, blurSize);
         }
     }
 

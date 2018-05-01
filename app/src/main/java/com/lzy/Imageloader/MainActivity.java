@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
                 ImageView imageView = (ImageView) holder.getView(R.id.iv);
                 Image.with(that).load(TDSystemGallery.sList.get(position).getPath()).placeHolder(loadingDrawable)
                         .errorDrawable(errorDrawable)
-                        .face()
                         .size(Util.getScreenWidth(that) / 4, Util.getScreenWidth(that) / 4)
                         .into(imageView);
                 imageView.setOnClickListener(new View.OnClickListener() {

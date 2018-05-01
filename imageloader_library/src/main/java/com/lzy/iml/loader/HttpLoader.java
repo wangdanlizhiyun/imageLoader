@@ -9,6 +9,7 @@ import com.lzy.iml.cache.ImageCache;
 import com.lzy.iml.cache.disk.DiskLruCache;
 import com.lzy.iml.core.Image;
 import com.lzy.iml.request.BitmapRequest;
+import com.lzy.iml.request.BitmapRequestBuilder;
 import com.lzy.iml.util.ImageSizeUtil;
 import com.lzy.iml.util.Util;
 
@@ -36,14 +37,20 @@ public class HttpLoader implements Load {
     @Override
     public void loadBitmap(BitmapRequest request) {
         request.isFirstDown = true;
-        request.bitmap = ImageCache.getInstance().getBitmapFromDisk(request);
-        if (request.bitmap == null) {
-            if (ImageCache.getInstance().hasDiskLruCache()) {
-                downloadBitmapToDisk(request, ImageCache.getInstance().getDiskLruCache());
-                request.bitmap = ImageCache.getInstance().getBitmapFromDisk(request);
-            } else {
-                downloadImgByUrl(request);
+
+        if (request.diskCacheStrategy != BitmapRequestBuilder.DiskCacheStrategy.ALL){
+
+            request.bitmap = ImageCache.getInstance().getBitmapFromDisk(request);
+            if (request.bitmap == null) {
+                if (ImageCache.getInstance().hasDiskLruCache()) {
+                    downloadBitmapToDisk(request, ImageCache.getInstance().getDiskLruCache());
+                    request.bitmap = ImageCache.getInstance().getBitmapFromDisk(request);
+                } else {
+                    downloadImgByUrl(request);
+                }
             }
+        }else {
+            downloadImgByUrl(request);
         }
     }
     @Override

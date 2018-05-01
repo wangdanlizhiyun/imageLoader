@@ -11,6 +11,7 @@ import com.lzy.iml.loader.HttpLoader;
 import com.lzy.iml.loader.Load;
 import com.lzy.iml.loader.ResLoader;
 import com.lzy.iml.request.BitmapRequest;
+import com.lzy.iml.request.BitmapRequestBuilder;
 
 
 /**
@@ -45,13 +46,17 @@ public class LoadTask implements Runnable {
         if (load != null) {
             if (mRequest.bitmap == null) {
                 load.loadBitmap(mRequest);
-                ImageCache.getInstance().putBitmap2Memory(mRequest.getMemoryKey(), mRequest.bitmap);
+                if (mRequest.diskCacheStrategy != BitmapRequestBuilder.DiskCacheStrategy.NONE){
+                    ImageCache.getInstance().putBitmap2Memory(mRequest.getMemoryKey(), mRequest.bitmap);
+                }
                 mRequest.refreashBitmap();
             }
             Movie movie = load.loadMovie(mRequest);
             if (movie != null) {
                 GifUtil.getInstance().getGifDraw(movie, mRequest);
-                ImageCache.getInstance().putMovie2Memory(mRequest.getPathKey(), movie);
+                if (mRequest.diskCacheStrategy != BitmapRequestBuilder.DiskCacheStrategy.NONE){
+                    ImageCache.getInstance().putMovie2Memory(mRequest.getPathKey(), movie);
+                }
             }
         }
     }

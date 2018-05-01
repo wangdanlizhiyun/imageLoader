@@ -76,6 +76,8 @@ final class BitmapOperate {
             paint.setColor(Color.BLACK);
             canvas.drawBitmap(bitmap, 0, 0, paint);
             bitmap = null;
+        }else {
+            aimBitmap = bitmap;
         }
         return aimBitmap;
     }

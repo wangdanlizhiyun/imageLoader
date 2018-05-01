@@ -35,14 +35,21 @@ public class BitmapRequestBuilder {
     public Drawable errorDrawable;
     public Bitmap.Config inPreferredConfig;
     public boolean isFace;
+    public int blurSize;
+    public DiskCacheStrategy diskCacheStrategy;
 
     int parentCode;
+
+    public static enum DiskCacheStrategy{
+        ALL,MEMORY,NONE;
+    }
 
     public BitmapRequestBuilder(int parentCode) {
         this.parentCode = parentCode;
         inPreferredConfig = Bitmap.Config.RGB_565;
         placeHolder = Image.placeHolder;
         errorDrawable = Image.errorDrawable;
+        diskCacheStrategy = DiskCacheStrategy.ALL;
     }
 
 
@@ -59,6 +66,7 @@ public class BitmapRequestBuilder {
         bitmapRequest.placeHolder = placeHolder;
         bitmapRequest.errorDrawable = errorDrawable;
         bitmapRequest.inPreferredConfig = inPreferredConfig;
+        bitmapRequest.diskCacheStrategy = diskCacheStrategy;
         bitmapRequest.view = new WeakReference<ImageView>(view);
         loadImage(bitmapRequest);
     }
@@ -72,9 +80,17 @@ public class BitmapRequestBuilder {
         this.isFace = true;
         return this;
     }
+    public BitmapRequestBuilder blur(int blurSize) {
+        this.blurSize = blurSize;
+        return this;
+    }
 
     public BitmapRequestBuilder bitmapConfig(Bitmap.Config inPreferredConfig) {
         this.inPreferredConfig = inPreferredConfig;
+        return this;
+    }
+    public BitmapRequestBuilder diskCacheStrategy(DiskCacheStrategy diskCacheStrategy) {
+        this.diskCacheStrategy = diskCacheStrategy;
         return this;
     }
 
@@ -144,7 +160,10 @@ public class BitmapRequestBuilder {
                         if (request.view.get() != null) {
                             request.view.get().setTag(R.id.tag_url, request.getMemoryKey());
                         }
-                        Bitmap bitmap = ImageCache.getInstance().getBitmapFromMemory(request);
+                        Bitmap bitmap = null;
+                        if (request.diskCacheStrategy != DiskCacheStrategy.NONE){
+                            bitmap = ImageCache.getInstance().getBitmapFromMemory(request);
+                        }
                         if (bitmap != null) {
                             request.bitmap = bitmap;
                             request.display();
@@ -152,8 +171,11 @@ public class BitmapRequestBuilder {
                             request.displayLoading(request.placeHolder);
                         }
 
-                        Movie movie = ImageCache.getInstance().getMovie2Memory(request.getPathKey());
-                        GifUtil.getInstance().getGifDraw(movie, request);
+                        Movie movie = null;
+                        if (request.diskCacheStrategy != DiskCacheStrategy.NONE){
+                            movie = ImageCache.getInstance().getMovie2Memory(request.getPathKey());
+                            GifUtil.getInstance().getGifDraw(movie, request);
+                        }
                         if (bitmap != null && movie != null) return;
 
                         final LoadTask task = new LoadTask(request);
