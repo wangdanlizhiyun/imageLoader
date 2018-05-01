@@ -31,10 +31,6 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    public void back(View view) {
-        finish();
-    }
-
     private class ImagePagerAdapter extends FragmentStatePagerAdapter {
         private final int mSize;
 

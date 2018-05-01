@@ -47,35 +47,36 @@ public class MainActivity extends AppCompatActivity {
         errorDrawable = new FailedDrawable(Color.RED);
 
         loadingDrawable = new ColorDrawable(Color.WHITE);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        mAdapter = new CommenAdapter<>(that, TDSystemGallery.sList).addItemViewDelegate(new ItemViewDelegate<ImageBean>(R.layout.item_main) {
+            @Override
+            public void convert(final ViewHolder holder, ImageBean imageBean, final int position) {
 
+                ImageView imageView = (ImageView) holder.getView(R.id.iv);
+                Image.with(that).load(TDSystemGallery.sList.get(position).getPath()).placeHolder(loadingDrawable)
+                        .errorDrawable(errorDrawable)
+                        .face()
+                        .size(Util.getScreenWidth(that) / 4, Util.getScreenWidth(that) / 4)
+                        .into(imageView);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(that, DetailActivity.class);
+                        intent.putExtra("position", position);
+                        startActivity(intent);
+
+                    }
+                });
+            }
+        });
+        recyclerView.setAdapter(mAdapter);
 
         LoadLocalImagesUtil.setLoadCompeleteListener(new LoadLocalImagesUtil.LoadCompeleteListener() {
             @Override
             public void compelete() {
                 if (isDestoryed) return;
-                mAdapter = new CommenAdapter<>(that, TDSystemGallery.sList).addItemViewDelegate(new ItemViewDelegate<ImageBean>(R.layout.item_main) {
-                    @Override
-                    public void convert(final ViewHolder holder, ImageBean imageBean, final int position) {
-
-                        ImageView imageView = (ImageView) holder.getView(R.id.iv);
-                        Image.with(that).load(TDSystemGallery.sList.get(position).getPath()).placeHolder(loadingDrawable)
-                                .errorDrawable(errorDrawable)
-                                .face()
-                                .size(Util.getScreenWidth(that) / 3, Util.getScreenWidth(that) / 3)
-                                .into(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(that, DetailActivity.class);
-                                intent.putExtra("position", position);
-                                startActivity(intent);
-
-                            }
-                        });
-                    }
-                });
-                recyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+                recyclerView.requestLayout();
             }
         });
         if (ContextCompat.checkSelfPermission(this,

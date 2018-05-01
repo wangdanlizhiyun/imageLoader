@@ -28,10 +28,12 @@ import static com.lzy.iml.util.Util.toHexString;
 /**
  * Created by lizhiyun on 16/6/2.
  */
-public class HttpLoader {
+public class HttpLoader implements Load {
     int mIntDownloadTime = 0;
     int mIntRetryTime = 2;
 
+
+    @Override
     public void loadBitmap(BitmapRequest request) {
         request.isFirstDown = true;
         request.bitmap = ImageCache.getInstance().getBitmapFromDisk(request);
@@ -44,8 +46,9 @@ public class HttpLoader {
             }
         }
     }
-    public void loadMovie(BitmapRequest request) {
-        ImageCache.getInstance().getMovieFromDisk(request);
+    @Override
+    public Movie loadMovie(BitmapRequest request) {
+        return ImageCache.getInstance().getMovieFromDisk(request);
     }
 
     public void downloadBitmapToDisk(BitmapRequest request, DiskLruCache diskLruCache) {

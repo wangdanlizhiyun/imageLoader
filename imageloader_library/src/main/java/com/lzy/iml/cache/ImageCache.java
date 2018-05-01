@@ -44,7 +44,8 @@ public class ImageCache {
 
     private static ImageCache instance;
     public Context context;
-    private LruCache<String, Bitmap> mMemoryCache;
+    private LruCache<String, Bitmap> mBitmapCache;
+    private LruCache<String, Movie> mMovieCache;
     private DiskLruCache mDiskLruCache;
     Set<WeakReference<Bitmap>> reusablePool;
     public static final Object mDiskCacheLock = new Object();
@@ -106,7 +107,7 @@ public class ImageCache {
         reusablePool = Collections.synchronizedSet(new HashSet<WeakReference<Bitmap>>());
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         int memoryClass = am.getMemoryClass();
-        mMemoryCache = new LruCache<String, Bitmap>(memoryClass / 10 * 1024 * 1024) {
+        mBitmapCache = new LruCache<String, Bitmap>(memoryClass / 10 * 1024 * 1024) {
 
             @Override
             protected int sizeOf(String key, Bitmap value) {
@@ -118,6 +119,7 @@ public class ImageCache {
                 removEntry(oldValue);
             }
         };
+        mMovieCache = new LruCache<>(10);
         initDiskCache();
     }
 
@@ -157,8 +159,16 @@ public class ImageCache {
 
     public synchronized void putBitmap2Memory(String key, Bitmap bitmap) {
         if (!TextUtils.isEmpty(key) && bitmap != null && !bitmap.isRecycled()) {
-            mMemoryCache.put(key, bitmap);
+            mBitmapCache.put(key, bitmap);
         }
+    }
+    public synchronized void putMovie2Memory(String key, Movie movie) {
+        if (!TextUtils.isEmpty(key) && movie != null) {
+            mMovieCache.put(key, movie);
+        }
+    }
+    public synchronized Movie getMovie2Memory(String key){
+        return mMovieCache.get(key);
     }
 
     /**
@@ -201,8 +211,10 @@ public class ImageCache {
         }
     }
 
+
+
     public synchronized Bitmap getBitmapFromMemory(BitmapRequest bitmapRequest) {
-        return mMemoryCache.get(bitmapRequest.getMemoryKey());
+        return mBitmapCache.get(bitmapRequest.getMemoryKey());
     }
 
     public synchronized Bitmap getBitmapFromDisk(BitmapRequest bitmapRequest) {
@@ -224,11 +236,8 @@ public class ImageCache {
                 if (is != null) {
                     FileDescriptor fd = ((FileInputStream) is).getFD();
                     bitmapRequest.loadBitmapFromDescriptor(fd);
-                    if (null != bitmapRequest.bitmap) {
-                        mMemoryCache.put(bitmapRequest.getMemoryKey(), bitmapRequest.bitmap);
-                    }
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 if (null != snapshot) {
@@ -239,7 +248,7 @@ public class ImageCache {
         }
     }
 
-    public synchronized void getMovieFromDisk(BitmapRequest bitmapRequest) {
+    public synchronized Movie getMovieFromDisk(BitmapRequest bitmapRequest) {
         synchronized (mDiskCacheLock) {
             while (mDiskCacheStarting) {
                 try {
@@ -247,17 +256,16 @@ public class ImageCache {
                 } catch (InterruptedException e) {
                 }
             }
-            if (mDiskLruCache == null) return;
+            if (mDiskLruCache == null) return null;
             DiskLruCache.Snapshot snapshot = null;
             try {
                 snapshot = mDiskLruCache.get(bitmapRequest.getDiskKey());
                 if (null == snapshot) {
-                    return;
+                    return null;
                 }
                 InputStream is = snapshot.getInputStream(0);
                 if (is != null) {
-                    Movie movie = Movie.decodeStream(is);
-                    GifUtil.getInstance().getGifDraw(movie,bitmapRequest);
+                    return Movie.decodeStream(is);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -266,13 +274,14 @@ public class ImageCache {
                     snapshot.close();
                 }
             }
+            return null;
         }
     }
 
 
     public void clearCache() {
-        if (mMemoryCache != null) {
-            mMemoryCache.evictAll();
+        if (mBitmapCache != null) {
+            mBitmapCache.evictAll();
         }
 
         synchronized (mDiskCacheLock) {

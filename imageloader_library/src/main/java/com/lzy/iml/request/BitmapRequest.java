@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.lzy.iml.R;
@@ -45,8 +46,7 @@ public class BitmapRequest {
     public Bitmap.Config inPreferredConfig;
     public boolean isFace;
     public int parentCode;
-    public Movie movie;
-    BitmapFactory.Options options = new BitmapFactory.Options();
+    public BitmapFactory.Options options = new BitmapFactory.Options();
 
     public static enum SourceType {
         FILE, ASSERTS, HTTP, RES
@@ -68,14 +68,23 @@ public class BitmapRequest {
             return Util.md5(this.path + this.width + this.height + isFace);
         }
     }
+    public String getPathKey() {
+        if (TextUtils.isEmpty(path)){
+            return Util.md5(this.resId+"");
+        }else {
+            return Util.md5(this.path);
+        }
+    }
 
 
-    /**
-     * 检测是否能用于显示
-     *
-     * @return
-     */
-    public Boolean checkEffective() {
+    public Boolean checkIfCanDisplay() {
+
+        if (view == null) return false;
+        if (view.get() == null) return false;
+        return (view.get().getTag(R.id.tag_url)).equals(getMemoryKey());
+    }
+    public Boolean checkIfNeedLoad() {
+        if (this.view == null) return true;
         if (this.view.get() != null && ((String) this.view.get().getTag(R.id.tag_url)).equals(getMemoryKey())) {
             return true;
         }
@@ -128,16 +137,7 @@ public class BitmapRequest {
         });
 
     }
-
-    public void loadBitmapFromFile(final String path) {
-        loadBitmapFromResource(new Runnable() {
-            @Override
-            public void run() {
-                bitmap = BitmapFactory.decodeFile(path, options);
-            }
-        });
-    }
-
+//
     public void loadBitmapFromDescriptor(final FileDescriptor fileDescriptor) {
         loadBitmapFromResource(new Runnable() {
             @Override
@@ -146,7 +146,7 @@ public class BitmapRequest {
             }
         });
     }
-
+//
     public void loadBitmapFromResource(Runnable runnable) {
         options.inJustDecodeBounds = true;
         runnable.run();
@@ -167,8 +167,8 @@ public class BitmapRequest {
         }
         modify();
     }
-
-
+//
+//
     private void modify() {
         if (bitmap == null) return;
         bitmap = ImageRotateUtil.modifyBitmap(path, bitmap);
@@ -178,93 +178,8 @@ public class BitmapRequest {
     }
 
 
-    public void loadBitmapFromResId(final int id) {
-        loadBitmapFromResource(new Runnable() {
-            @Override
-            public void run() {
-                bitmap = BitmapFactory.decodeResource(ImageCache.getInstance().context.getResources(), id, options);
-            }
-        });
-
-    }
-
-    public void loadBitmap() {
-        InputStream is = null;
-        switch (sourceType) {
-            case RES:
-                loadBitmapFromResId(resId);
-                break;
-            case HTTP:
-                new HttpLoader().loadBitmap(this);
-                break;
-            case ASSERTS:
-                try {
-                    is = ImageCache.getInstance().context.getAssets().open(path);
-                    if (is != null) {
-                        loadBitmapFromIs(is);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    Util.close(is);
-                }
-                break;
-            case FILE:
-                if (!new File(path).exists()) return;
-                loadBitmapFromFile(path);
-                break;
-
-        }
-    }
-    public void loadMovie() {
-        InputStream is = null;
-        switch (sourceType) {
-            case RES:
-                try {
-                    is = ImageCache.getInstance().context.getResources().openRawResource(resId);
-                    if (is != null) {
-                        if (view != null && view.get() != null) {
-                            movie = Movie.decodeStream(is);
-                                GifUtil.getInstance().getGifDraw(movie,this);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    Util.close(is);
-                }
-                break;
-            case HTTP:
-                new HttpLoader().loadMovie(this);
-                break;
-            case ASSERTS:
-                try {
-                    is = ImageCache.getInstance().context.getAssets().open(path);
-                    if (is != null) {
-                        if (view != null && view.get() != null) {
-                            movie = Movie.decodeStream(is);
-                                GifUtil.getInstance().getGifDraw(movie,this);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    Util.close(is);
-                }
-                break;
-            case FILE:
-                if (!new File(path).exists()) return;
-                if (view != null && view.get() != null) {
-                    movie = Movie.decodeFile(path);
-                        GifUtil.getInstance().getGifDraw(movie,this);
-                }
-                break;
-
-        }
-    }
-
     public void refreashBitmap() {
-        if (!checkEffective()) return;
+        if (!checkIfCanDisplay()) return;
         Message message = Message.obtain();
         message.what = REFRESH;
         message.obj = this;
@@ -276,7 +191,7 @@ public class BitmapRequest {
             final BitmapRequest request = (BitmapRequest) msg.obj;
             switch (msg.what) {
                 case REFRESH:
-                    if (request.checkEffective()) {
+                    if (request.checkIfCanDisplay()) {
                         request.display();
                     }
                     break;

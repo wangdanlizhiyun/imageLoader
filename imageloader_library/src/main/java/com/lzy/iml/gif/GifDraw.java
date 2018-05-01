@@ -27,7 +27,7 @@ public class GifDraw {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (bitmapRequest.view == null || bitmapRequest.view.get() == null || bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkEffective()) {
+            if (bitmapRequest.view == null || bitmapRequest.view.get() == null || bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkIfCanDisplay()) {
                 handler.removeCallbacksAndMessages(null);
                 return;
             }

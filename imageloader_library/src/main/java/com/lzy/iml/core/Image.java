@@ -34,6 +34,6 @@ public class Image {
 
     public static Drawable placeHolder;
     public static Drawable errorDrawable;
-    public static int ConnectTimeout = 30_000;
+    public static int ConnectTimeout = 5_000;
 
 }

@@ -2,9 +2,11 @@ package com.lzy.iml.request;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Movie;
 import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -12,6 +14,7 @@ import com.lzy.iml.R;
 import com.lzy.iml.cache.ImageCache;
 import com.lzy.iml.core.Image;
 import com.lzy.iml.core.LoadTask;
+import com.lzy.iml.gif.GifUtil;
 import com.lzy.iml.util.ImageLoaderExecutor;
 import com.lzy.iml.util.ImageSizeUtil;
 
@@ -103,6 +106,7 @@ public class BitmapRequestBuilder {
         }
         return this;
     }
+
     public void preLoad(String path) {
         if (TextUtils.isEmpty(path)) return;
         this.path = path;
@@ -137,7 +141,9 @@ public class BitmapRequestBuilder {
                     @Override
                     public void run() {
                         ImageSizeUtil.getImageViewSize(request);
-                        request.view.get().setTag(R.id.tag_url, request.getMemoryKey());
+                        if (request.view.get() != null) {
+                            request.view.get().setTag(R.id.tag_url, request.getMemoryKey());
+                        }
                         Bitmap bitmap = ImageCache.getInstance().getBitmapFromMemory(request);
                         if (bitmap != null) {
                             request.bitmap = bitmap;
@@ -145,6 +151,11 @@ public class BitmapRequestBuilder {
                         } else {
                             request.displayLoading(request.placeHolder);
                         }
+
+                        Movie movie = ImageCache.getInstance().getMovie2Memory(request.getPathKey());
+                        GifUtil.getInstance().getGifDraw(movie, request);
+                        if (bitmap != null && movie != null) return;
+
                         final LoadTask task = new LoadTask(request);
                         ImageLoaderExecutor.getInstance().execute(task);
                     }
