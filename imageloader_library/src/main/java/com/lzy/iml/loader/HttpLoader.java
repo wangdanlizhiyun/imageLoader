@@ -87,7 +87,7 @@ public class HttpLoader implements Load {
                             total++;
                             out.write(b);
                         }
-                        if (total == request.totalSize) {
+                        if (request.totalSize <= 0 || total == request.totalSize) {
                             editor.commit();
                         } else {
                             editor.abort();
