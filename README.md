@@ -30,7 +30,7 @@
 		}
 	}
 	dependencies {
-    	        implementation 'com.github.wangdanlizhiyun:imageLoader:-SNAPSHOT'
+    	        implementation 'com.github.wangdanlizhiyun:login:v1.0.0'
     }
     ```
 
