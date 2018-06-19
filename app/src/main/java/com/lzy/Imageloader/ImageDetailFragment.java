@@ -24,7 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.lzy.iml.core.Image;
+import com.lzy.iml.core.ImageLoader;
 
 
 public class ImageDetailFragment extends Fragment {
@@ -61,7 +61,7 @@ public class ImageDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Image.with(this).load(mImageUrl).bitmapConfig(Bitmap.Config.ARGB_8888).into(mImageView);
+        ImageLoader.with(this).load(mImageUrl).bitmapConfig(Bitmap.Config.ARGB_8888).into(mImageView);
     }
 
     @Override

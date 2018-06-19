@@ -1,18 +1,16 @@
 package com.lzy.iml.request;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Movie;
 import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.lzy.iml.R;
 import com.lzy.iml.cache.ImageCache;
-import com.lzy.iml.core.Image;
+import com.lzy.iml.core.ImageLoader;
 import com.lzy.iml.core.LoadTask;
 import com.lzy.iml.gif.GifUtil;
 import com.lzy.iml.util.ImageLoaderExecutor;
@@ -48,8 +46,8 @@ public class BitmapRequestBuilder {
     public BitmapRequestBuilder(int parentCode) {
         this.parentCode = parentCode;
         inPreferredConfig = Bitmap.Config.RGB_565;
-        placeHolder = Image.placeHolder;
-        errorDrawable = Image.errorDrawable;
+        placeHolder = ImageLoader.placeHolder;
+        errorDrawable = ImageLoader.errorDrawable;
         diskCacheStrategy = DiskCacheStrategy.ALL;
     }
 

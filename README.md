@@ -39,26 +39,26 @@
  在application里初始化
     ```
         ImageCache.getInstance().init(this,getCacheDir().getAbsolutePath()+"/image");
-                Image.placeHolder = new LoadingDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.loading_gray));
-                Image.errorDrawable = new FailedDrawable(Color.RED);
+                ImageLoader.placeHolder = new LoadingDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.loading_gray));
+                ImageLoader.errorDrawable = new FailedDrawable(Color.RED);
     ```
   使用示例
 
   ```
-    Image.with(that).load(TDSystemGallery.sList.get(position).getPath()).placeHolder(loadingDrawable)
+    ImageLoader.with(that).load(TDSystemGallery.sList.get(position).getPath()).placeHolder(loadingDrawable)
                                     .errorDrawable(errorDrawable)
 
                                     .size(Util.getScreenWidth(that) / 3, Util.getScreenWidth(that) / 3)
                                     .into(imageView);
 
-    Image.with(this).load("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=823222274,759908896&fm=27&gp=0.jpg")
+    ImageLoader.with(this).load("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=823222274,759908896&fm=27&gp=0.jpg")
                     .diskCacheStrategy(BitmapRequestBuilder.DiskCacheStrategy.NONE)
                     .face()
                     .blur(3)
                     .into(imageView1);
-     Image.with(this).loadAsserts("mp.gif").into(imageView2);
-     Image.with(this).errorDrawable(null).load(R.drawable.xiaosong).into(imageView3);
-     Image.with(this).errorDrawable(null).load(R.drawable.g).into(imageView4);
+     ImageLoader.with(this).loadAsserts("mp.gif").into(imageView2);
+     ImageLoader.with(this).errorDrawable(null).load(R.drawable.xiaosong).into(imageView3);
+     ImageLoader.with(this).errorDrawable(null).load(R.drawable.g).into(imageView4);
   ```
 
 

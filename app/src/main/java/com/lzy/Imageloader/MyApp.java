@@ -7,7 +7,7 @@ import android.graphics.Color;
 import com.lzy.Imageloader.view.FailedDrawable;
 import com.lzy.Imageloader.view.LoadingDrawable;
 import com.lzy.iml.cache.ImageCache;
-import com.lzy.iml.core.Image;
+import com.lzy.iml.core.ImageLoader;
 
 
 /**
@@ -19,7 +19,7 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         ImageCache.getInstance().init(this,getCacheDir().getAbsolutePath()+"/image");
-        Image.placeHolder = new LoadingDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.loading_gray));
-        Image.errorDrawable = new FailedDrawable(Color.RED);
+        ImageLoader.placeHolder = new LoadingDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.loading_gray));
+        ImageLoader.errorDrawable = new FailedDrawable(Color.RED);
     }
 }

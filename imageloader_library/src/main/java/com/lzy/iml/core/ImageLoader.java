@@ -12,7 +12,7 @@ import com.lzy.iml.request.BitmapRequestBuilder;
 /**
  * Created by lizhiyun on 16/6/7.
  */
-public class Image {
+public class ImageLoader {
     public static BitmapRequestBuilder with(final Context context) {
         return new BitmapRequestBuilder(context.hashCode());
     }

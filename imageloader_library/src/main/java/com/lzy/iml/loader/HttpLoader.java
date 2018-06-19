@@ -1,16 +1,12 @@
 package com.lzy.iml.loader;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Movie;
-import android.text.TextUtils;
 
 import com.lzy.iml.cache.ImageCache;
 import com.lzy.iml.cache.disk.DiskLruCache;
-import com.lzy.iml.core.Image;
+import com.lzy.iml.core.ImageLoader;
 import com.lzy.iml.request.BitmapRequest;
 import com.lzy.iml.request.BitmapRequestBuilder;
-import com.lzy.iml.util.ImageSizeUtil;
 import com.lzy.iml.util.Util;
 
 import java.io.BufferedInputStream;
@@ -21,9 +17,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.MessageDigest;
-
-import static com.lzy.iml.util.Util.toHexString;
 
 
 /**
@@ -78,7 +71,7 @@ public class HttpLoader implements Load {
                     try {
                         URL url = new URL(request.path);
                         conn = (HttpURLConnection) url.openConnection();
-                        conn.setConnectTimeout(Image.ConnectTimeout);
+                        conn.setConnectTimeout(ImageLoader.ConnectTimeout);
                         request.totalSize = conn.getContentLength();
                         in = new BufferedInputStream(conn.getInputStream(), 8 * 1024);
                         out = new BufferedOutputStream(outputStream, 8 * 1024);
@@ -123,7 +116,7 @@ public class HttpLoader implements Load {
         try {
             URL url = new URL(request.path);
             conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(Image.ConnectTimeout);
+            conn.setConnectTimeout(ImageLoader.ConnectTimeout);
             request.loadBitmapFromIs(conn.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
