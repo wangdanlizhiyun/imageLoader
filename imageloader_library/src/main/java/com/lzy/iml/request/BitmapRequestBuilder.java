@@ -37,6 +37,7 @@ public class BitmapRequestBuilder {
     public boolean isFace;
     public int blurSize;
     public DiskCacheStrategy diskCacheStrategy;
+    public RequestListener requestListener;
 
     int parentCode;
 
@@ -68,6 +69,7 @@ public class BitmapRequestBuilder {
         bitmapRequest.inPreferredConfig = inPreferredConfig;
         bitmapRequest.diskCacheStrategy = diskCacheStrategy;
         bitmapRequest.view = new WeakReference<ImageView>(view);
+        bitmapRequest.requestListener = requestListener;
         loadImage(bitmapRequest);
     }
 

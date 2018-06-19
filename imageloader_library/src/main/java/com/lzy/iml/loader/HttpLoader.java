@@ -116,6 +116,7 @@ public class HttpLoader implements Load {
 
 
     public void downloadImgByUrl(BitmapRequest request) {
+        request.isFirstDown = true;
         FileOutputStream fos = null;
         InputStream is = null;
         HttpURLConnection conn = null;

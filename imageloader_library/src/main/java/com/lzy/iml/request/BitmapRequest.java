@@ -50,6 +50,7 @@ public class BitmapRequest {
     public int parentCode;
     public BitmapRequestBuilder.DiskCacheStrategy diskCacheStrategy;
     public BitmapFactory.Options options = new BitmapFactory.Options();
+    public RequestListener requestListener;
 
     public static enum SourceType {
         FILE, ASSERTS, HTTP, RES
@@ -105,6 +106,7 @@ public class BitmapRequest {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void display() {
+
         if (view == null || view.get() == null) {
             return;
         }
@@ -112,6 +114,9 @@ public class BitmapRequest {
             setBitmap(view.get(), bitmap);
         } else {
             setBitmap(view.get(), errorDrawable);
+        }
+        if (requestListener != null){
+            requestListener.onResourceReady(this,isFirstDown);
         }
     }
 
