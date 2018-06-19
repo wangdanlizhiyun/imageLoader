@@ -49,6 +49,9 @@ public class LoadTask implements Runnable {
                 if (mRequest.diskCacheStrategy != BitmapRequestBuilder.DiskCacheStrategy.NONE){
                     ImageCache.getInstance().putBitmap2Memory(mRequest.getMemoryKey(), mRequest.bitmap);
                 }
+                if (isCanceled) {
+                    return;
+                }
                 mRequest.refreashBitmap();
             }
             Movie movie = load.loadMovie(mRequest);
@@ -60,4 +63,9 @@ public class LoadTask implements Runnable {
             }
         }
     }
+
+    public void cancel(){
+
+    }
+    private boolean isCanceled;
 }

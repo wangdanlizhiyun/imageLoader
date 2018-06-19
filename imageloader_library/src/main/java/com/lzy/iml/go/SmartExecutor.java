@@ -190,6 +190,10 @@ public class SmartExecutor implements Executor {
                     }
                 }
             }
+            for (int i = 0; i < runningList.size(); i++) {
+                LoadTask loadTask = (LoadTask) runningList.get(i).getRealRunnable();
+                loadTask.cancel();
+            }
         }
     }
 
