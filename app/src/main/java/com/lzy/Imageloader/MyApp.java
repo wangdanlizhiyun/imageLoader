@@ -15,9 +15,11 @@ import com.lzy.iml.core.ImageLoader;
  */
 
 public class MyApp extends Application {
+    public static Application application;
     @Override
     public void onCreate() {
         super.onCreate();
+        application = this;
         ImageCache.getInstance().init(this,getCacheDir().getAbsolutePath()+"/image");
         ImageLoader.placeHolder = new LoadingDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.loading_gray));
         ImageLoader.errorDrawable = new FailedDrawable(Color.RED);

@@ -13,6 +13,7 @@ import com.lzy.iml.cache.ImageCache;
 import com.lzy.iml.core.ImageLoader;
 import com.lzy.iml.core.LoadTask;
 import com.lzy.iml.gif.GifUtil;
+import com.lzy.iml.loader.CustomLoader;
 import com.lzy.iml.util.ImageLoaderExecutor;
 import com.lzy.iml.util.ImageSizeUtil;
 
@@ -23,19 +24,20 @@ import java.lang.ref.WeakReference;
  * Created by lizhiyun on 16/6/3.
  */
 public class BitmapRequestBuilder {
-    public WeakReference<View> view;
-    public int width;
-    public int height;
-    public String path;
-    public BitmapRequest.SourceType sourceType;
-    public int resId;
-    public Drawable placeHolder;
-    public Drawable errorDrawable;
-    public Bitmap.Config inPreferredConfig;
-    public boolean isFace;
-    public int blurSize;
-    public DiskCacheStrategy diskCacheStrategy;
-    public RequestListener requestListener;
+    private WeakReference<View> view;
+    private int width;
+    private int height;
+    private String path;
+    private BitmapRequest.SourceType sourceType;
+    private int resId;
+    private Drawable placeHolder;
+    private Drawable errorDrawable;
+    private Bitmap.Config inPreferredConfig;
+    private boolean isFace;
+    private int blurSize;
+    private DiskCacheStrategy diskCacheStrategy;
+    private RequestListener requestListener;
+    private CustomLoader customLoader;
 
     int parentCode;
 
@@ -68,9 +70,14 @@ public class BitmapRequestBuilder {
         bitmapRequest.diskCacheStrategy = diskCacheStrategy;
         bitmapRequest.view = new WeakReference<ImageView>(view);
         bitmapRequest.requestListener = requestListener;
+        bitmapRequest.customLoader = customLoader;
         loadImage(bitmapRequest);
     }
 
+    public BitmapRequestBuilder customLoader(CustomLoader customLoader){
+        this.customLoader = customLoader;
+        return this;
+    }
     /**
      * 识别头像并剪切
      *

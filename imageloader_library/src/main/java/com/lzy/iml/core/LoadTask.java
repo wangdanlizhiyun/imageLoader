@@ -29,19 +29,23 @@ public class LoadTask implements Runnable {
     public void run() {
         if (!mRequest.checkIfNeedLoad()) return;
         Load load = null;
-        switch (mRequest.sourceType) {
-            case RES:
-                load = new ResLoader();
-                break;
-            case FILE:
-                load = new FileLoader();
-                break;
-            case ASSERTS:
-                load = new AssetLoader();
-                break;
-            case HTTP:
-                load = new HttpLoader();
-                break;
+        if (mRequest.customLoader != null){
+            load = mRequest.customLoader;
+        }else {
+            switch (mRequest.sourceType) {
+                case RES:
+                    load = new ResLoader();
+                    break;
+                case FILE:
+                    load = new FileLoader();
+                    break;
+                case ASSERTS:
+                    load = new AssetLoader();
+                    break;
+                case HTTP:
+                    load = new HttpLoader();
+                    break;
+            }
         }
         if (load != null) {
             if (mRequest.bitmap == null) {

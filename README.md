@@ -30,7 +30,7 @@
 		}
 	}
 	dependencies {
-    	        implementation 'com.github.wangdanlizhiyun:imageLoader:1.0.1'
+    	        implementation 'com.github.wangdanlizhiyun:imageLoader:1.1.0'
     }
     ```
 

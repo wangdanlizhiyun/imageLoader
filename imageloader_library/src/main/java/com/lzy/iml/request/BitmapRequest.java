@@ -4,7 +4,6 @@ package com.lzy.iml.request;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Movie;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -16,18 +15,14 @@ import android.widget.ImageView;
 
 import com.lzy.iml.R;
 import com.lzy.iml.cache.ImageCache;
-import com.lzy.iml.gif.GifDraw;
-import com.lzy.iml.gif.GifUtil;
-import com.lzy.iml.loader.HttpLoader;
+import com.lzy.iml.loader.CustomLoader;
 import com.lzy.iml.util.FaceUtil;
 import com.lzy.iml.util.GaussianBlur;
 import com.lzy.iml.util.ImageRotateUtil;
 import com.lzy.iml.util.ImageSizeUtil;
 import com.lzy.iml.util.Util;
 
-import java.io.File;
 import java.io.FileDescriptor;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
@@ -51,6 +46,7 @@ public class BitmapRequest {
     public BitmapRequestBuilder.DiskCacheStrategy diskCacheStrategy;
     public BitmapFactory.Options options = new BitmapFactory.Options();
     public RequestListener requestListener;
+    public CustomLoader customLoader;
 
     public static enum SourceType {
         FILE, ASSERTS, HTTP, RES
@@ -67,10 +63,13 @@ public class BitmapRequest {
 
     public String getMemoryKey() {
         if (TextUtils.isEmpty(path)){
-            return Util.md5(this.resId + "" + this.width + this.height + isFace+blurSize);
+            return Util.md5(this.resId + "" + this.width + this.height + isFace+blurSize + getCustomLoaderId());
         }else {
-            return Util.md5(this.path + this.width + this.height + isFace+blurSize);
+            return Util.md5(this.path + this.width + this.height + isFace+blurSize + getCustomLoaderId());
         }
+    }
+    private String getCustomLoaderId(){
+        return customLoader == null ? "" : customLoader.getClass().getName();
     }
     public String getPathKey() {
         if (TextUtils.isEmpty(path)){
@@ -153,8 +152,8 @@ public class BitmapRequest {
     public void loadBitmapFromIs(final InputStream is) {
         options.inPreferredConfig = inPreferredConfig;
         options.inJustDecodeBounds = false;
-//        options.inMutable = true;
-//        options.inBitmap = ImageCache.getInstance().getReusable(options);
+        options.inMutable = true;
+        options.inBitmap = ImageCache.getInstance().getReusable(options);
         try {
             bitmap = BitmapFactory.decodeStream(is, null, options);
         }catch (Exception e){

@@ -60,12 +60,11 @@ public class MainActivity extends Activity {
                         Intent intent = new Intent(that, DetailActivity.class);
                         intent.putExtra("position", position);
                         startActivity(intent);
-
                     }
                 });
             }
         });
-//        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
 
         LoadLocalImagesUtil.setLoadCompeleteListener(new LoadLocalImagesUtil.LoadCompeleteListener() {
             @Override
