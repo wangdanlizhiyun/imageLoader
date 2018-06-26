@@ -136,16 +136,6 @@ public class BitmapRequest {
         view.setImageBitmap(bitmap);
     }
 
-    public void loadBitmapFromIs(final InputStream is) {
-        loadBitmapFromResource(new Runnable() {
-            @Override
-            public void run() {
-                bitmap = BitmapFactory.decodeStream(is, null, options);
-            }
-        });
-
-    }
-//
     public void loadBitmapFromDescriptor(final FileDescriptor fileDescriptor) {
         loadBitmapFromResource(new Runnable() {
             @Override
@@ -154,9 +144,30 @@ public class BitmapRequest {
             }
         });
     }
-//
+    public void getWHFromIs(final InputStream is) {
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(is, null, options);
+        options.inSampleSize = ImageSizeUtil.caculateInSampleSize(options, path,
+                width, height);
+    }
+    public void loadBitmapFromIs(final InputStream is) {
+        options.inPreferredConfig = inPreferredConfig;
+        options.inJustDecodeBounds = false;
+//        options.inMutable = true;
+//        options.inBitmap = ImageCache.getInstance().getReusable(options);
+        try {
+            bitmap = BitmapFactory.decodeStream(is, null, options);
+        }catch (Exception e){
+            Log.e("test","e="+e.getMessage());
+            e.printStackTrace();
+        }
+        modify();
+    }
+
+
     public void loadBitmapFromResource(Runnable runnable) {
         options.inJustDecodeBounds = true;
+        options.inSampleSize = 1;
         runnable.run();
         options.inSampleSize = ImageSizeUtil.caculateInSampleSize(options, path,
                 width, height);
@@ -167,6 +178,7 @@ public class BitmapRequest {
         try {
             runnable.run();
         }catch (Exception e){
+            Log.e("test","e="+e.getMessage());
             e.printStackTrace();
         }
         if (bitmap == null) {
@@ -175,9 +187,7 @@ public class BitmapRequest {
         }
         modify();
     }
-//
-//
-    private void modify() {
+    public void modify() {
         if (bitmap == null) return;
         bitmap = ImageRotateUtil.modifyBitmap(path, bitmap);
         if (isFace) {

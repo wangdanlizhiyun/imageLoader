@@ -26,7 +26,7 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     RecyclerView recyclerView;
     Activity that;
     CommenAdapter<ImageBean> mAdapter;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         that = this;
         recyclerView = findViewById(R.id.recycleView);
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        recyclerView.setAdapter(mAdapter);
+//        recyclerView.setAdapter(mAdapter);
 
         LoadLocalImagesUtil.setLoadCompeleteListener(new LoadLocalImagesUtil.LoadCompeleteListener() {
             @Override

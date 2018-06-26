@@ -104,12 +104,30 @@ public class HttpLoader implements Load {
         if (total < request.totalSize) {
             downloadBitmapToDisk(request, diskLruCache);
         }
-
     }
-
 
     public void downloadImgByUrl(BitmapRequest request) {
         request.isFirstDown = true;
+        getWH(request);
+        load(request);
+    }
+
+    void getWH(BitmapRequest request) {
+        FileOutputStream fos = null;
+        InputStream is = null;
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(request.path);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(ImageLoader.ConnectTimeout);
+            request.getWHFromIs(conn.getInputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Util.close(conn, fos, is);
+        }
+    }
+    void load(BitmapRequest request) {
         FileOutputStream fos = null;
         InputStream is = null;
         HttpURLConnection conn = null;
@@ -124,6 +142,5 @@ public class HttpLoader implements Load {
             Util.close(conn, fos, is);
         }
     }
-
 
 }
