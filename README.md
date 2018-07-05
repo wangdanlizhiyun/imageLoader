@@ -30,7 +30,7 @@
 		}
 	}
 	dependencies {
-    	        implementation 'com.github.wangdanlizhiyun:imageLoader:1.1.0'
+    	        implementation 'com.github.wangdanlizhiyun:imageLoader:1.1.2'
     }
     ```
 
@@ -59,6 +59,16 @@
      ImageLoader.with(this).loadAsserts("mp.gif").into(imageView2);
      ImageLoader.with(this).errorDrawable(null).load(R.drawable.xiaosong).into(imageView3);
      ImageLoader.with(this).errorDrawable(null).load(R.drawable.g).into(imageView4);
+      //自定义生成图片
+             ImageView imageView5 = findViewById(R.id.iv5);
+     
+             ImageLoader.with(this).customLoader(new CustomLoader() {
+                 @Override
+                 public void loadBitmap(BitmapRequest request) {
+                     super.loadBitmap(request);
+                     request.bitmap = QrUtil.getQrCodeBitmap(MyApp.application.getApplicationContext(),request.path,null);
+                 }
+             }).load("http://dev-newwap.yixinfa.cn/#/add_dev?uuid=118061031592").into(imageView5);
   ```
 
 
