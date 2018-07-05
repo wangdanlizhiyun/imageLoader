@@ -39,9 +39,6 @@ public class OtherActivity extends AppCompatActivity {
         ImageView imageView4 = findViewById(R.id.iv4);
         ImageLoader.with(this).errorDrawable(null).load(R.drawable.g).into(imageView4);
 
-
-
-
         //自定义生成图片
         ImageView imageView5 = findViewById(R.id.iv5);
 

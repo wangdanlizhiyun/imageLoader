@@ -177,12 +177,8 @@ public class BitmapRequest {
         try {
             runnable.run();
         }catch (Exception e){
-            Log.e("test","e="+e.getMessage());
+//            Log.e("test","e="+e.getMessage());
             e.printStackTrace();
-        }
-        if (bitmap == null) {
-            options.inBitmap = null;
-            runnable.run();
         }
         modify();
     }
