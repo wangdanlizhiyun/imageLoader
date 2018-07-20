@@ -21,7 +21,11 @@ public class ResLoader implements Load {
         request.loadBitmapFromResource(new Runnable() {
             @Override
             public void run() {
-                request.bitmap = BitmapFactory.decodeResource(ImageCache.getInstance().context.getResources(), request.resId, request.options);
+                try {
+                    request.bitmap = BitmapFactory.decodeResource(ImageCache.getInstance().context.getResources(), request.resId, request.options);
+                }catch (Exception e){
+
+                }
             }
         });
     }

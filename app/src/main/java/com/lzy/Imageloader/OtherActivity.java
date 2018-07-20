@@ -33,7 +33,7 @@ public class OtherActivity extends AppCompatActivity {
                 .blur(3)
                 .into(imageView1);
         final ImageView imageView2 = findViewById(R.id.iv2);
-        ImageLoader.with(this).loadAsserts("python.png").into(imageView2);
+        ImageLoader.with(this).loadAsserts("640.gif").into(imageView2);
         ImageView imageView3 = findViewById(R.id.iv3);
         ImageLoader.with(this).errorDrawable(null).load(R.drawable.xiaosong).into(imageView3);
         ImageView imageView4 = findViewById(R.id.iv4);

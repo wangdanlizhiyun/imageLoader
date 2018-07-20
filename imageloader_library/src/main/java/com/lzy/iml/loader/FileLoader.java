@@ -23,7 +23,11 @@ public class FileLoader implements Load {
         request.loadBitmapFromResource(new Runnable() {
             @Override
             public void run() {
-                request.bitmap = BitmapFactory.decodeFile(request.path, request.options);
+                try{
+                    request.bitmap = BitmapFactory.decodeFile(request.path, request.options);
+                }catch (Exception e){
+
+                }
             }
         });
     }
