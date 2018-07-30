@@ -35,9 +35,12 @@ public class FileLoader implements Load {
 
     @Override
     public Movie loadMovie(BitmapRequest request) {
-        if (!new File(request.path).exists()) return null;
-        if (request.view != null && request.view.get() != null) {
-            return Movie.decodeFile(request.path);
+        try{
+            if (new File(request.path).exists() && request.view != null && request.view.get() != null){
+                return Movie.decodeFile(request.path);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return null;
     }

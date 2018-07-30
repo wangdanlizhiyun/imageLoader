@@ -41,8 +41,8 @@ public class BitmapRequestBuilder {
 
     int parentCode;
 
-    public static enum DiskCacheStrategy{
-        ALL,MEMORY,NONE;
+    public static enum DiskCacheStrategy {
+        ALL, MEMORY, NONE;
     }
 
     public BitmapRequestBuilder(int parentCode) {
@@ -74,10 +74,11 @@ public class BitmapRequestBuilder {
         loadImage(bitmapRequest);
     }
 
-    public BitmapRequestBuilder customLoader(CustomLoader customLoader){
+    public BitmapRequestBuilder customLoader(CustomLoader customLoader) {
         this.customLoader = customLoader;
         return this;
     }
+
     /**
      * 识别头像并剪切
      *
@@ -87,6 +88,7 @@ public class BitmapRequestBuilder {
         this.isFace = true;
         return this;
     }
+
     public BitmapRequestBuilder blur(int blurSize) {
         this.blurSize = blurSize;
         return this;
@@ -96,6 +98,7 @@ public class BitmapRequestBuilder {
         this.inPreferredConfig = inPreferredConfig;
         return this;
     }
+
     public BitmapRequestBuilder diskCacheStrategy(DiskCacheStrategy diskCacheStrategy) {
         this.diskCacheStrategy = diskCacheStrategy;
         return this;
@@ -160,36 +163,30 @@ public class BitmapRequestBuilder {
                 final LoadTask task = new LoadTask(request);
                 ImageLoaderExecutor.getInstance().execute(task);
             } else {
-                request.view.get().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ImageSizeUtil.getImageViewSize(request);
-                        if (request.view.get() != null) {
-                            request.view.get().setTag(R.id.tag_url, request.getMemoryKey());
-                        }
-                        Bitmap bitmap = null;
-                        if (request.diskCacheStrategy != DiskCacheStrategy.NONE){
-                            bitmap = ImageCache.getInstance().getBitmapFromMemory(request);
-                        }
-                        if (bitmap != null) {
-                            request.bitmap = bitmap;
-                            request.display();
-                        } else {
-                            request.displayLoading(request.placeHolder);
-                        }
+                ImageSizeUtil.getImageViewSize(request);
+                if (request.view.get() != null) {
+                    request.view.get().setTag(R.id.tag_url, request.getMemoryKey());
+                }
+                Bitmap bitmap = null;
+                if (request.diskCacheStrategy != DiskCacheStrategy.NONE) {
+                    bitmap = ImageCache.getInstance().getBitmapFromMemory(request);
+                }
+                if (bitmap != null) {
+                    request.bitmap = bitmap;
+                    request.display();
+                } else {
+                    request.displayLoading(request.placeHolder);
+                }
 
-                        Movie movie = null;
-                        if (request.diskCacheStrategy != DiskCacheStrategy.NONE){
-                            movie = ImageCache.getInstance().getMovie2Memory(request.getPathKey());
-                            GifUtil.getInstance().getGifDraw(movie, request);
-                        }
-                        if (bitmap != null && movie != null) return;
+                Movie movie = null;
+                if (request.diskCacheStrategy != DiskCacheStrategy.NONE) {
+                    movie = ImageCache.getInstance().getMovie2Memory(request.getPathKey());
+                    GifUtil.getInstance().getGifDraw(movie, request);
+                }
+                if (bitmap != null && movie != null) return;
 
-                        final LoadTask task = new LoadTask(request);
-                        ImageLoaderExecutor.getInstance().execute(task);
-                    }
-                });
-
+                final LoadTask task = new LoadTask(request);
+                ImageLoaderExecutor.getInstance().execute(task);
             }
         } else {
             throw new RuntimeException("only run on ui thread");
