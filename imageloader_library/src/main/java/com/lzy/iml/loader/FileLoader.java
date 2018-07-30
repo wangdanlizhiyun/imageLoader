@@ -19,17 +19,18 @@ public class FileLoader implements Load {
 
     @Override
     public void loadBitmap(final BitmapRequest request) {
-        if (!new File(request.path).exists()) return;
-        request.loadBitmapFromResource(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    request.bitmap = BitmapFactory.decodeFile(request.path, request.options);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+        try{
+            if (new File(request.path).exists()){
+                request.loadBitmapFromResource(new Runnable() {
+                    @Override
+                    public void run() {
+                            request.bitmap = BitmapFactory.decodeFile(request.path, request.options);
+                    }
+                });
             }
-        });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
