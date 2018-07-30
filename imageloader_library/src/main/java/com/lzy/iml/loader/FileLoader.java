@@ -26,7 +26,7 @@ public class FileLoader implements Load {
                 try{
                     request.bitmap = BitmapFactory.decodeFile(request.path, request.options);
                 }catch (Exception e){
-
+                    e.printStackTrace();
                 }
             }
         });
