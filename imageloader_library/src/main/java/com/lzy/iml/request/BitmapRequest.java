@@ -4,6 +4,7 @@ package com.lzy.iml.request;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.lzy.iml.R;
@@ -28,7 +30,7 @@ import java.lang.ref.WeakReference;
 
 
 public class BitmapRequest {
-    public WeakReference<ImageView> view;
+    public WeakReference<View> view;
     public Bitmap bitmap;
     public int width;
     public int height;
@@ -47,6 +49,8 @@ public class BitmapRequest {
     public BitmapFactory.Options options = new BitmapFactory.Options();
     public RequestListener requestListener;
     public CustomLoader customLoader;
+    public CustomDisplayMethod customDisplayMethod;
+
 
     public static enum SourceType {
         FILE, ASSERTS, HTTP, RES
@@ -62,19 +66,21 @@ public class BitmapRequest {
     }
 
     public String getMemoryKey() {
-        if (TextUtils.isEmpty(path)){
-            return Util.md5(this.resId + "" + this.width + this.height + isFace+blurSize + getCustomLoaderId());
-        }else {
-            return Util.md5(this.path + this.width + this.height + isFace+blurSize + getCustomLoaderId());
+        if (TextUtils.isEmpty(path)) {
+            return Util.md5(this.resId + "" + this.width + this.height + isFace + blurSize + getCustomLoaderId());
+        } else {
+            return Util.md5(this.path + this.width + this.height + isFace + blurSize + getCustomLoaderId());
         }
     }
-    private String getCustomLoaderId(){
+
+    private String getCustomLoaderId() {
         return customLoader == null ? "" : customLoader.getClass().getName();
     }
+
     public String getPathKey() {
-        if (TextUtils.isEmpty(path)){
-            return Util.md5(this.resId+"");
-        }else {
+        if (TextUtils.isEmpty(path)) {
+            return Util.md5(this.resId + "");
+        } else {
             return Util.md5(this.path);
         }
     }
@@ -86,6 +92,7 @@ public class BitmapRequest {
         if (view.get() == null) return false;
         return (view.get().getTag(R.id.tag_url)).equals(getMemoryKey());
     }
+
     public Boolean checkIfNeedLoad() {
         if (this.view == null) return true;
         if (this.view.get() != null && ((String) this.view.get().getTag(R.id.tag_url)).equals(getMemoryKey())) {
@@ -105,34 +112,45 @@ public class BitmapRequest {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void display() {
-
         if (view == null || view.get() == null) {
             return;
         }
-        if (bitmap != null) {
-            setBitmap(view.get(), bitmap);
+        if (customDisplayMethod != null) {
+            customDisplayMethod.display(bitmap);
         } else {
-            setBitmap(view.get(), errorDrawable);
+            if (bitmap != null) {
+                setBitmap(view.get(), bitmap);
+            } else {
+                setBitmap(view.get(), errorDrawable);
+            }
         }
-        if (requestListener != null){
-            requestListener.onResourceReady(this,isFirstDown);
+        if (requestListener != null) {
+            requestListener.onResourceReady(this, isFirstDown);
         }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void setBitmap(ImageView view, Drawable bitmap) {
+    public void setBitmap(View view, Drawable bitmap) {
         if (view == null) {
             return;
         }
-        view.setImageDrawable(bitmap);
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageDrawable(bitmap);
+        } else {
+            view.setBackground(bitmap);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void setBitmap(ImageView view, Bitmap bitmap) {
+    public void setBitmap(View view, Bitmap bitmap) {
         if (view == null) {
             return;
         }
-        view.setImageBitmap(bitmap);
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageBitmap(bitmap);
+        } else {
+            view.setBackground(new BitmapDrawable(bitmap));
+        }
     }
 
     public void loadBitmapFromDescriptor(final FileDescriptor fileDescriptor) {
@@ -143,12 +161,14 @@ public class BitmapRequest {
             }
         });
     }
+
     public void getWHFromIs(final InputStream is) {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(is, null, options);
         options.inSampleSize = ImageSizeUtil.caculateInSampleSize(options, path,
                 width, height);
     }
+
     public void loadBitmapFromIs(final InputStream is) {
         options.inPreferredConfig = inPreferredConfig;
         options.inJustDecodeBounds = false;
@@ -156,8 +176,8 @@ public class BitmapRequest {
         options.inBitmap = ImageCache.getInstance().getReusable(options);
         try {
             bitmap = BitmapFactory.decodeStream(is, null, options);
-        }catch (Exception e){
-            Log.e("test","e="+e.getMessage());
+        } catch (Exception e) {
+            Log.e("test", "e=" + e.getMessage());
             e.printStackTrace();
         }
         modify();
@@ -176,19 +196,19 @@ public class BitmapRequest {
         options.inBitmap = ImageCache.getInstance().getReusable(options);
         try {
             runnable.run();
-        }catch (Exception e){
-//            Log.e("test","e="+e.getMessage());
+        } catch (Exception e) {
             e.printStackTrace();
         }
         modify();
     }
+
     public void modify() {
         if (bitmap == null) return;
         bitmap = ImageRotateUtil.modifyBitmap(path, bitmap);
         if (isFace) {
             bitmap = FaceUtil.face(bitmap);
         }
-        if (blurSize > 0){
+        if (blurSize > 0) {
             bitmap = new GaussianBlur().blur(bitmap, blurSize);
         }
     }

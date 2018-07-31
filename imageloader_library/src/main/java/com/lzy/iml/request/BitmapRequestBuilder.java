@@ -38,6 +38,7 @@ public class BitmapRequestBuilder {
     private DiskCacheStrategy diskCacheStrategy;
     private RequestListener requestListener;
     private CustomLoader customLoader;
+    private CustomDisplayMethod customDisplayMethod;
 
     int parentCode;
 
@@ -54,7 +55,7 @@ public class BitmapRequestBuilder {
     }
 
 
-    public void into(ImageView view) {
+    public void into(View view) {
         if (view == null) return;
         BitmapRequest bitmapRequest = new BitmapRequest();
         bitmapRequest.parentCode = parentCode;
@@ -68,14 +69,19 @@ public class BitmapRequestBuilder {
         bitmapRequest.errorDrawable = errorDrawable;
         bitmapRequest.inPreferredConfig = inPreferredConfig;
         bitmapRequest.diskCacheStrategy = diskCacheStrategy;
-        bitmapRequest.view = new WeakReference<ImageView>(view);
+        bitmapRequest.view = new WeakReference<View>(view);
         bitmapRequest.requestListener = requestListener;
         bitmapRequest.customLoader = customLoader;
+        bitmapRequest.customDisplayMethod = customDisplayMethod;
         loadImage(bitmapRequest);
     }
 
     public BitmapRequestBuilder customLoader(CustomLoader customLoader) {
         this.customLoader = customLoader;
+        return this;
+    }
+    public BitmapRequestBuilder customDisplayMethod(CustomDisplayMethod customDisplayMethod) {
+        this.customDisplayMethod = customDisplayMethod;
         return this;
     }
 

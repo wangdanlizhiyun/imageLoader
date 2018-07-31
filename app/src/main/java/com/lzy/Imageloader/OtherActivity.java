@@ -1,22 +1,19 @@
 package com.lzy.Imageloader;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.lzy.iml.cache.ImageCache;
 import com.lzy.iml.core.ImageLoader;
 import com.lzy.iml.loader.CustomLoader;
 import com.lzy.iml.request.BitmapRequest;
 import com.lzy.iml.request.BitmapRequestBuilder;
-import com.lzy.iml.util.ImageSizeUtil;
-import com.lzy.iml.util.Util;
-
-import java.io.InputStream;
+import com.lzy.iml.request.CustomDisplayMethod;
 
 
 public class OtherActivity extends AppCompatActivity {
@@ -49,6 +46,19 @@ public class OtherActivity extends AppCompatActivity {
                 request.bitmap = QrUtil.getQrCodeBitmap(MyApp.application.getApplicationContext(),request.path,null);
             }
         }).load("http://dev-newwap.yixinfa.cn/#/add_dev?uuid=118061031592").into(imageView5);
+
+
+        final TextView tv  = findViewById(R.id.tv6);
+        tv.setText("fjdaljfaldjflajgaljdfdfajl");
+        ImageLoader.with(this).customDisplayMethod(new CustomDisplayMethod() {
+            @Override
+            public void display(Bitmap bitmap) {
+                Drawable drawable = new BitmapDrawable(bitmap);
+                drawable.setBounds(0,0,(int) tv.getTextSize(),(int) tv.getTextSize());
+                tv.setCompoundDrawables(drawable,null,null,null);
+            }
+        }).size(100,100).load(R.drawable.xiaosong).into(tv);
+
     }
 
 }

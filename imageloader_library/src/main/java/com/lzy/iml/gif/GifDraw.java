@@ -46,7 +46,11 @@ public class GifDraw {
         canvas.save();
         movie.setTime((int) (System.currentTimeMillis() % movie.duration()));
         movie.draw(canvas, 0, 0);
-        bitmapRequest.view.get().setImageBitmap(bitmap);
+//        bitmapRequest.display();
+        if (bitmapRequest.view.get() instanceof ImageView){
+
+            ((ImageView) bitmapRequest.view.get()).setImageBitmap(bitmap);
+        }
         canvas.restore();
     }
 
