@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GifDraw {
     private Movie movie;
-    private Bitmap bitmap;
+//    private Bitmap bitmap;
     private Canvas canvas;
     private Handler handler = new Handler(Looper.getMainLooper());
     private final long delayMills = 100;
@@ -48,10 +48,10 @@ public class GifDraw {
         canvas.save();
         movie.setTime((int) (System.currentTimeMillis() % movie.duration()));
         movie.draw(canvas, 0, 0);
-//        bitmapRequest.display();
-        if (bitmapRequest.view.get() instanceof ImageView){
-            ((ImageView) bitmapRequest.view.get()).setImageBitmap(bitmap);
-        }
+        bitmapRequest.display();
+//        if (bitmapRequest.view.get() instanceof ImageView){
+//            ((ImageView) bitmapRequest.view.get()).setImageBitmap(bitmap);
+//        }
         canvas.restore();
     }
 
@@ -63,8 +63,8 @@ public class GifDraw {
         if (movie.width() <= 0 || movie.height() <= 0) {
             return;
         }
-        bitmap = Bitmap.createBitmap(movie.width(), movie.height(), bitmapRequest.inPreferredConfig);
-        canvas = new Canvas(bitmap);
+        bitmapRequest.bitmap = Bitmap.createBitmap(movie.width(), movie.height(), bitmapRequest.inPreferredConfig);
+        canvas = new Canvas(bitmapRequest.bitmap);
         handler.postDelayed(runnable, delayMills);
     }
 

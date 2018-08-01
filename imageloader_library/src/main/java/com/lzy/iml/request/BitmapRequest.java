@@ -115,7 +115,7 @@ public class BitmapRequest {
             return;
         }
         if (customDisplayMethod != null) {
-            customDisplayMethod.display(bitmap);
+            customDisplayMethod.display(this);
         } else {
             if (bitmap != null) {
                 setBitmap(view.get(), bitmap);

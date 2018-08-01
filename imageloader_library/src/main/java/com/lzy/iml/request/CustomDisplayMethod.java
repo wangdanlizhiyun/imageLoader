@@ -10,5 +10,5 @@ import android.view.View;
  * Created by lizhiyun on 16/5/29.
  */
 public abstract class CustomDisplayMethod {
-    public abstract void display(Bitmap bitmap);
+    public abstract void display(BitmapRequest request);
 }

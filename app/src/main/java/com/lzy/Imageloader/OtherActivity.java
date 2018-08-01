@@ -36,7 +36,7 @@ public class OtherActivity extends AppCompatActivity {
         ImageView imageView4 = findViewById(R.id.iv4);
         ImageLoader.with(this).errorDrawable(null).load(R.drawable.g).into(imageView4);
 
-        //自定义生成图片
+        //自定义生成二维码图片
         ImageView imageView5 = findViewById(R.id.iv5);
 
         ImageLoader.with(this).customLoader(new CustomLoader() {
@@ -49,15 +49,16 @@ public class OtherActivity extends AppCompatActivity {
 
 
         final TextView tv  = findViewById(R.id.tv6);
-        tv.setText("fjdaljfaldjflajgaljdfdfajl");
+        tv.setText("textview左边有个leftdrawable");
+        tv.setTextSize(10);
         ImageLoader.with(this).customDisplayMethod(new CustomDisplayMethod() {
             @Override
-            public void display(Bitmap bitmap) {
-                Drawable drawable = new BitmapDrawable(bitmap);
-                drawable.setBounds(0,0,(int) tv.getTextSize(),(int) tv.getTextSize());
+            public void display(BitmapRequest request) {
+                Drawable drawable = new BitmapDrawable(request.bitmap);
+                drawable.setBounds(0,0,(int) tv.getTextSize()*4,(int) tv.getTextSize()*4);
                 tv.setCompoundDrawables(drawable,null,null,null);
             }
-        }).size(100,100).load(R.drawable.xiaosong).into(tv);
+        }).size(100,100).load(R.drawable.g).into(tv);
 
     }
 
