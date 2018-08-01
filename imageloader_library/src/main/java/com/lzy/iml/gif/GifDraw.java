@@ -22,12 +22,13 @@ public class GifDraw {
     private Bitmap bitmap;
     private Canvas canvas;
     private Handler handler = new Handler(Looper.getMainLooper());
-    private final long delayMills = 16;
+    private final long delayMills = 100;
     BitmapRequest bitmapRequest;
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
             if (bitmapRequest.view == null || bitmapRequest.view.get() == null || bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkIfCanDisplay()) {
+                onStop();
                 handler.removeCallbacksAndMessages(null);
                 return;
             }
@@ -43,12 +44,12 @@ public class GifDraw {
 
     private void draw() {
         if (mIsStop.get()) return;
+        if (bitmapRequest.view == null || bitmapRequest.view.get() == null || bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkIfCanDisplay()) return;
         canvas.save();
         movie.setTime((int) (System.currentTimeMillis() % movie.duration()));
         movie.draw(canvas, 0, 0);
 //        bitmapRequest.display();
         if (bitmapRequest.view.get() instanceof ImageView){
-
             ((ImageView) bitmapRequest.view.get()).setImageBitmap(bitmap);
         }
         canvas.restore();
@@ -57,7 +58,7 @@ public class GifDraw {
 
     public void into(BitmapRequest bitmapRequest) {
         this.bitmapRequest = bitmapRequest;
-        if (bitmapRequest.view == null || bitmapRequest.view.get() == null) return;
+        if (bitmapRequest.view == null || bitmapRequest.view.get() == null || bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkIfCanDisplay()) return;
         if (movie == null) return;
         if (movie.width() <= 0 || movie.height() <= 0) {
             return;
@@ -70,10 +71,12 @@ public class GifDraw {
     AtomicBoolean mIsStop = new AtomicBoolean(false);
 
     void onStop() {
+        handler.removeCallbacksAndMessages(null);
         mIsStop.compareAndSet(false, true);
     }
 
     void onStart() {
+        handler.postDelayed(runnable, delayMills);
         mIsStop.compareAndSet(true, false);
     }
 }

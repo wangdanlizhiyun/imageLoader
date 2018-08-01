@@ -2,6 +2,7 @@ package com.lzy.iml.gif;
 
 import android.graphics.Movie;
 import android.util.Log;
+import android.view.View;
 
 import com.lzy.iml.request.BitmapRequest;
 
@@ -29,14 +30,16 @@ public class GifUtil {
     ConcurrentHashMap<Integer, GifDraw> gifDrawConcurrentHashMap;
 
     public void getGifDraw(Movie movie, BitmapRequest bitmapRequest) {
-        if (movie == null || bitmapRequest.view == null || bitmapRequest.view.get() == null) return;
+        if (movie == null || bitmapRequest.view == null || bitmapRequest.view.get() == null || !bitmapRequest.checkIfCanDisplay()) return;
         synchronized (gifDrawConcurrentHashMap) {
             GifDraw gifDraw = gifDrawConcurrentHashMap.get(bitmapRequest.view.get().hashCode());
             if (gifDraw == null) {
                 gifDraw = new GifDraw(movie, bitmapRequest);
                 gifDrawConcurrentHashMap.put(bitmapRequest.view.get().hashCode(), gifDraw);
+                gifDraw.into(bitmapRequest);
+            }else {
+                stopGif(bitmapRequest.view.get());
             }
-            gifDraw.into(bitmapRequest);
         }
     }
 
@@ -50,6 +53,22 @@ public class GifUtil {
             }
         }
     }
+    public void stopGif(View view) {
+        if (view != null){
+            synchronized (gifDrawConcurrentHashMap) {
+                if (view != null){
+                    GifDraw gifDraw = gifDrawConcurrentHashMap.get(view.hashCode());
+                    if (gifDraw != null){
+                        gifDraw.onStop();
+                        gifDrawConcurrentHashMap.remove(view.hashCode());
+                    }
+                }
+            }
+        }
+    }
+
+
+
     public void startGif(int code) {
         synchronized (gifDrawConcurrentHashMap) {
             for (GifDraw gifDraw : gifDrawConcurrentHashMap.values()
@@ -68,6 +87,7 @@ public class GifUtil {
                 int key = (int) entry.getKey();
                 GifDraw gifDraw = (GifDraw) entry.getValue();
                 if (gifDraw.bitmapRequest.parentCode == code) {
+                    gifDraw.onStop();
                     gifDrawConcurrentHashMap.remove(key);
                 }
             }

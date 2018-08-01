@@ -62,6 +62,7 @@ public class LoadTask implements Runnable {
                 }
                 mRequest.refreashBitmap();
             }
+            GifUtil.getInstance().stopGif(mRequest.view.get());
             Movie movie = load.loadMovie(mRequest);
             if (movie != null) {
                 GifUtil.getInstance().getGifDraw(movie, mRequest);

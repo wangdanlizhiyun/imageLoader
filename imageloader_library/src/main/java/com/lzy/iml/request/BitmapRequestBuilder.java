@@ -172,6 +172,8 @@ public class BitmapRequestBuilder {
                 ImageSizeUtil.getImageViewSize(request);
                 if (request.view.get() != null) {
                     request.view.get().setTag(R.id.tag_url, request.getMemoryKey());
+                }else {
+                    return;
                 }
                 Bitmap bitmap = null;
                 if (request.diskCacheStrategy != DiskCacheStrategy.NONE) {
@@ -184,13 +186,7 @@ public class BitmapRequestBuilder {
                     request.displayLoading(request.placeHolder);
                 }
 
-                Movie movie = null;
-                if (request.diskCacheStrategy != DiskCacheStrategy.NONE) {
-                    movie = ImageCache.getInstance().getMovie2Memory(request.getPathKey());
-                    GifUtil.getInstance().getGifDraw(movie, request);
-                }
-                if (bitmap != null && movie != null) return;
-
+                GifUtil.getInstance().stopGif(request.view.get());
                 final LoadTask task = new LoadTask(request);
                 ImageLoaderExecutor.getInstance().execute(task);
             }

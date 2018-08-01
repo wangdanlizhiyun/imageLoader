@@ -87,7 +87,6 @@ public class BitmapRequest {
 
 
     public Boolean checkIfCanDisplay() {
-
         if (view == null) return false;
         if (view.get() == null) return false;
         return (view.get().getTag(R.id.tag_url)).equals(getMemoryKey());
