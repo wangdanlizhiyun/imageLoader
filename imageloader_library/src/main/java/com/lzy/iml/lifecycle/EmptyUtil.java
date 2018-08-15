@@ -17,14 +17,17 @@ public class EmptyUtil {
     static ConcurrentHashMap<Integer,LifeCycleListener> concurrentHashMap = new ConcurrentHashMap<Integer,LifeCycleListener>();
     public static void setLifeCycle(Activity activity){
         EmptyFragment emptyFragment = getFragment(activity);
+        if (emptyFragment == null) return;
         emptyFragment.setLifeCycleListener(getLifeCycleListener(activity.hashCode()));
     }
     public static void setLifeCycle(Fragment fragment){
         EmptyFragment emptyFragment = getFragment(fragment);
+        if (emptyFragment == null) return;
         emptyFragment.setLifeCycleListener(getLifeCycleListener(fragment.hashCode()));
     }
     public static void setLifeCycle(android.support.v4.app.Fragment fragment){
         EmptySupportFragment emptyFragment = getFragment(fragment);
+        if (emptyFragment == null) return;
         emptyFragment.setLifeCycleListener(getLifeCycleListener(fragment.hashCode()));
     }
 
@@ -61,43 +64,58 @@ public class EmptyUtil {
 
     public static EmptyFragment getFragment(Activity activity) {
         EmptyFragment emptyFragment = findFragment(activity);
-        if (emptyFragment == null) {
-            emptyFragment = new EmptyFragment();
-            FragmentManager fragmentManager = activity.getFragmentManager();
-            fragmentManager
-                    .beginTransaction()
-                    .add(emptyFragment, TAG)
-                    .commitAllowingStateLoss();
-            fragmentManager.executePendingTransactions();
+        try{
+            if (emptyFragment == null) {
+                emptyFragment = new EmptyFragment();
+                FragmentManager fragmentManager = activity.getFragmentManager();
+                fragmentManager
+                        .beginTransaction()
+                        .add(emptyFragment, TAG)
+                        .commitAllowingStateLoss();
+                fragmentManager.executePendingTransactions();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
         return emptyFragment;
     }
 
 
     public static EmptyFragment getFragment(Fragment fragment) {
         EmptyFragment emptyFragment = findFragment(fragment);
-        if (emptyFragment == null) {
-            emptyFragment = new EmptyFragment();
-            FragmentManager fragmentManager = fragment.getFragmentManager();
-            fragmentManager
-                    .beginTransaction()
-                    .add(emptyFragment, TAG)
-                    .commitAllowingStateLoss();
-            fragmentManager.executePendingTransactions();
+        try{
+            if (emptyFragment == null) {
+                emptyFragment = new EmptyFragment();
+                FragmentManager fragmentManager = fragment.getFragmentManager();
+                fragmentManager
+                        .beginTransaction()
+                        .add(emptyFragment, TAG)
+                        .commitAllowingStateLoss();
+                fragmentManager.executePendingTransactions();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
         return emptyFragment;
     }
     public static EmptySupportFragment getFragment(android.support.v4.app.Fragment fragment) {
         EmptySupportFragment emptyFragment = findFragment(fragment);
-        if (emptyFragment == null) {
-            emptyFragment = new EmptySupportFragment();
-            android.support.v4.app.FragmentManager fragmentManager = fragment.getChildFragmentManager();
-            fragmentManager
-                    .beginTransaction()
-                    .add(emptyFragment, TAG)
-                    .commitAllowingStateLoss();
-            fragmentManager.executePendingTransactions();
+        try{
+            if (emptyFragment == null) {
+                emptyFragment = new EmptySupportFragment();
+                android.support.v4.app.FragmentManager fragmentManager = fragment.getChildFragmentManager();
+                fragmentManager
+                        .beginTransaction()
+                        .add(emptyFragment, TAG)
+                        .commitAllowingStateLoss();
+                fragmentManager.executePendingTransactions();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
         return emptyFragment;
     }
     private static final String TAG = "EmptyFragment_Tag_ImageLoaderLifeCycle";
