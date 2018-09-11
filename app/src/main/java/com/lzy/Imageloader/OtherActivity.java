@@ -24,7 +24,7 @@ public class OtherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_other);
 
         ImageView imageView1 = findViewById(R.id.iv1);
-        ImageLoader.with(this).load("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=823222274,759908896&fm=27&gp=0.jpg")
+        ImageLoader.with(this).load("http://img.soogif.com/aKaxb4oh3iwU0nFamlzjfAeHPNMUYFTq.gif_s400x0")
                 .diskCacheStrategy(BitmapRequestBuilder.DiskCacheStrategy.NONE)
                 .face()
                 .blur(3)

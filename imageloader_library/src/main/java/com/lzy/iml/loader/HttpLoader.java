@@ -30,9 +30,7 @@ public class HttpLoader implements Load {
     @Override
     public void loadBitmap(BitmapRequest request) {
         request.isFirstDown = true;
-
         if (request.diskCacheStrategy != BitmapRequestBuilder.DiskCacheStrategy.ALL){
-
             request.bitmap = ImageCache.getInstance().getBitmapFromDisk(request);
             if (request.bitmap == null) {
                 if (ImageCache.getInstance().hasDiskLruCache()) {

@@ -94,7 +94,7 @@ public class BitmapRequest {
 
     public Boolean checkIfNeedLoad() {
         if (this.view == null) return true;
-        if (this.view.get() != null && ((String) this.view.get().getTag(R.id.tag_url)).equals(getMemoryKey())) {
+        if (this.view.get() != null && ((String) this.view.get().getTag(R.id.tag_url))!= null && ((String) this.view.get().getTag(R.id.tag_url)).equals(getMemoryKey())) {
             return true;
         }
         return false;
