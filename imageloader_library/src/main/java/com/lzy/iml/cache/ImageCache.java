@@ -103,6 +103,11 @@ public class ImageCache {
      */
     public void init(Context context, String dir) {
         this.dir = dir;
+        File parentFile = new File(dir);
+        if (parentFile.exists() && parentFile.isFile()) {
+            parentFile.delete();
+        }
+        parentFile.mkdirs();
         this.context = context.getApplicationContext();
         reusablePool = Collections.synchronizedSet(new HashSet<WeakReference<Bitmap>>());
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

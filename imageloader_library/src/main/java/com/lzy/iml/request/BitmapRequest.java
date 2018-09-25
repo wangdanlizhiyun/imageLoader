@@ -89,13 +89,13 @@ public class BitmapRequest {
     public Boolean checkIfCanDisplay() {
         if (view == null) return false;
         if (view.get() == null) return false;
-        Object tag = view.get().getTag(R.id.tag_url);
+        Object tag = view.get().getTag(R.id.tag_lzy_il_url);
         return tag != null && tag.equals(getMemoryKey());
     }
 
     public Boolean checkIfNeedLoad() {
         if (this.view == null) return true;
-        Object tag = view.get().getTag(R.id.tag_url);
+        Object tag = view.get().getTag(R.id.tag_lzy_il_url);
         if (this.view.get() != null && tag != null && tag.equals(getMemoryKey())) {
             return true;
         }

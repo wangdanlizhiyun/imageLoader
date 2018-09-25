@@ -1,12 +1,10 @@
 package com.lzy.iml.request;
 
 import android.graphics.Bitmap;
-import android.graphics.Movie;
 import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.lzy.iml.R;
 import com.lzy.iml.cache.ImageCache;
@@ -171,7 +169,7 @@ public class BitmapRequestBuilder {
             } else {
                 ImageSizeUtil.getImageViewSize(request);
                 if (request.view.get() != null) {
-                    request.view.get().setTag(R.id.tag_url, request.getMemoryKey());
+                    request.view.get().setTag(R.id.tag_lzy_il_url, request.getMemoryKey());
                 }else {
                     return;
                 }
