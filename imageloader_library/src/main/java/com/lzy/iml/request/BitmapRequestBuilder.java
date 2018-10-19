@@ -78,8 +78,14 @@ public class BitmapRequestBuilder {
         this.customLoader = customLoader;
         return this;
     }
+
     public BitmapRequestBuilder customDisplayMethod(CustomDisplayMethod customDisplayMethod) {
         this.customDisplayMethod = customDisplayMethod;
+        return this;
+    }
+
+    public BitmapRequestBuilder requestListener(RequestListener requestListener) {
+        this.requestListener = requestListener;
         return this;
     }
 
@@ -170,7 +176,7 @@ public class BitmapRequestBuilder {
                 ImageSizeUtil.getImageViewSize(request);
                 if (request.view.get() != null) {
                     request.view.get().setTag(R.id.tag_lzy_il_url, request.getMemoryKey());
-                }else {
+                } else {
                     return;
                 }
                 Bitmap bitmap = null;
