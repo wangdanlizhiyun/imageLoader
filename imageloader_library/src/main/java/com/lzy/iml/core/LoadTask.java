@@ -65,10 +65,14 @@ public class LoadTask implements Runnable {
             GifUtil.getInstance().stopGif(mRequest.view.get());
             Movie movie = load.loadMovie(mRequest);
             if (movie != null) {
+                mRequest.movieDuration = movie.duration();
                 GifUtil.getInstance().getGifDraw(movie, mRequest);
                 if (mRequest.diskCacheStrategy != BitmapRequestBuilder.DiskCacheStrategy.NONE){
                     ImageCache.getInstance().putMovie2Memory(mRequest.getPathKey(), movie);
                 }
+            }
+            if (mRequest.bitmap == null){
+                mRequest.notifyResourceReady();
             }
         }
     }

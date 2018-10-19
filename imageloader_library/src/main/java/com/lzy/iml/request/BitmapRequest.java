@@ -32,6 +32,7 @@ import java.lang.ref.WeakReference;
 public class BitmapRequest {
     public WeakReference<View> view;
     public Bitmap bitmap;
+    public long movieDuration;
     public int width;
     public int height;
     public Boolean isFirstDown;
@@ -124,9 +125,6 @@ public class BitmapRequest {
             } else {
                 setBitmap(view.get(), errorDrawable);
             }
-        }
-        if (requestListener != null) {
-            requestListener.onResourceReady(this, isFirstDown);
         }
     }
 
@@ -222,6 +220,15 @@ public class BitmapRequest {
         message.obj = this;
         sUIHandler.sendMessage(message);
     }
+    public void notifyResourceReady() {
+        if (!checkIfCanDisplay()) return;
+        Message message = Message.obtain();
+        message.what = NotifyResourceReady;
+        message.obj = this;
+        sUIHandler.sendMessage(message);
+    }
+
+
 
     private static Handler sUIHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
@@ -230,6 +237,11 @@ public class BitmapRequest {
                 case REFRESH:
                     if (request.checkIfCanDisplay()) {
                         request.display();
+                    }
+                    break;
+                case NotifyResourceReady:
+                    if (request.checkIfCanDisplay()) {
+                        request.requestListener.onResourceReady(request, request.isFirstDown);
                     }
                     break;
 
@@ -241,4 +253,5 @@ public class BitmapRequest {
 
     };
     public final static int REFRESH = 1;
+    public final static int NotifyResourceReady = 2;
 }
