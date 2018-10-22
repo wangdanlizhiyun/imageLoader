@@ -241,7 +241,9 @@ public class BitmapRequest {
                     break;
                 case NotifyResourceReady:
                     if (request.checkIfCanDisplay()) {
-                        request.requestListener.onResourceReady(request, request.isFirstDown);
+                        if (request.requestListener != null){
+                            request.requestListener.onResourceReady(request, request.isFirstDown);
+                        }
                     }
                     break;
 

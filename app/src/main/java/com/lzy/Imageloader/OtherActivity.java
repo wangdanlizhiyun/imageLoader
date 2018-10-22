@@ -24,10 +24,10 @@ public class OtherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_other);
 
         ImageView imageView1 = findViewById(R.id.iv1);
-        ImageLoader.with(this).load("http://img.soogif.com/aKaxb4oh3iwU0nFamlzjfAeHPNMUYFTq.gif_s400x0")
-                .diskCacheStrategy(BitmapRequestBuilder.DiskCacheStrategy.NONE)
-                .face()
-                .blur(3)
+        ImageLoader.with(imageView1.getContext()).load("http://img.soogif.com/aKaxb4oh3iwU0nFamlzjfAeHPNMUYFTq.gif_s400x0")
+//                .diskCacheStrategy(BitmapRequestBuilder.DiskCacheStrategy.NONE)
+//                .face()
+//                .blur(3)
                 .into(imageView1);
         final ImageView imageView2 = findViewById(R.id.iv2);
         ImageLoader.with(this).loadAsserts("640.gif").into(imageView2);
@@ -58,7 +58,8 @@ public class OtherActivity extends AppCompatActivity {
                 drawable.setBounds(0,0,(int) tv.getTextSize()*4,(int) tv.getTextSize()*4);
                 tv.setCompoundDrawables(drawable,null,null,null);
             }
-        }).size(100,100).load(R.drawable.g).into(tv);
+        }).size(100,100).load(R.drawable.g)
+                .into(tv);
 
     }
 
