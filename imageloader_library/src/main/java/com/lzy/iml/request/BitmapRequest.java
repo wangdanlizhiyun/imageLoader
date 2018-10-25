@@ -24,6 +24,7 @@ import com.lzy.iml.util.ImageRotateUtil;
 import com.lzy.iml.util.ImageSizeUtil;
 import com.lzy.iml.util.Util;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -70,6 +71,14 @@ public class BitmapRequest {
         if (TextUtils.isEmpty(path)) {
             return Util.md5(this.resId + "" + this.width + this.height + isFace + blurSize + getCustomLoaderId());
         } else {
+            try{
+                if (!new File(path).exists()){
+                    return "";
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return "";
+            }
             return Util.md5(this.path + this.width + this.height + isFace + blurSize + getCustomLoaderId());
         }
     }
