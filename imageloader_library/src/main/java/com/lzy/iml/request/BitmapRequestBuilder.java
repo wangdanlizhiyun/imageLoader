@@ -52,9 +52,7 @@ public class BitmapRequestBuilder {
         diskCacheStrategy = DiskCacheStrategy.ALL;
     }
 
-
-    public void into(View view) {
-        if (view == null) return;
+    private BitmapRequest build(View view){
         BitmapRequest bitmapRequest = new BitmapRequest();
         bitmapRequest.parentCode = parentCode;
         bitmapRequest.path = path;
@@ -67,11 +65,22 @@ public class BitmapRequestBuilder {
         bitmapRequest.errorDrawable = errorDrawable;
         bitmapRequest.inPreferredConfig = inPreferredConfig;
         bitmapRequest.diskCacheStrategy = diskCacheStrategy;
-        bitmapRequest.view = new WeakReference<View>(view);
+        if (view != null){
+            bitmapRequest.view = new WeakReference<View>(view);
+        }
         bitmapRequest.requestListener = requestListener;
         bitmapRequest.customLoader = customLoader;
         bitmapRequest.customDisplayMethod = customDisplayMethod;
-        loadImage(bitmapRequest);
+        return bitmapRequest;
+    }
+
+    public void into(View view) {
+        if (view == null) return;
+        loadImage(build(view));
+    }
+
+    public Boolean hasInDiskCache(String url){
+        return ImageCache.getInstance().getBitmapFromMemory(load(url).build(null)) != null;
     }
 
     public BitmapRequestBuilder customLoader(CustomLoader customLoader) {

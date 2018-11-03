@@ -61,6 +61,7 @@ public class OtherActivity extends AppCompatActivity {
         }).size(100,100).load(R.drawable.g)
                 .into(tv);
 
+
     }
 
 }
