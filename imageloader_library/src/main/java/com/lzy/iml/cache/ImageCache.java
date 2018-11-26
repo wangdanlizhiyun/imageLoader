@@ -133,7 +133,7 @@ public class ImageCache {
 
             try {
                 mDiskLruCache = DiskLruCache.open(new File(dir),
-                        BuildConfig.VERSION_CODE, 1, 10 * 1024 * 1024);
+                        BuildConfig.VERSION_CODE, 1, 2*1024 * 1024 * 1024);
             } catch (IOException e) {
                 e.printStackTrace();
             }

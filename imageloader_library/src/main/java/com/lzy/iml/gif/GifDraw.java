@@ -44,7 +44,7 @@ public class GifDraw {
 
     private void draw() {
         if (mIsStop.get()) return;
-        if (bitmapRequest.view == null || bitmapRequest.view.get() == null || bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkIfCanDisplay()) return;
+        if (bitmapRequest.view == null || bitmapRequest.view.get() == null || bitmapRequest.view.get().getParent() == null || !bitmapRequest.checkIfCanDisplay() || movie == null || movie.duration() <= 1) return;
         canvas.save();
         movie.setTime((int) (System.currentTimeMillis() % movie.duration()));
         movie.draw(canvas, 0, 0);
